@@ -104,7 +104,7 @@ class WebViewRunner {
       ..useCertificateChainBytes(cert.buffer.asInt8List())
       ..usePrivateKeyBytes(keys.buffer.asInt8List());
     // Serves the API at localhost:8080 by default
-    final server = Jaguar(securityContext: security, port: 8001);
+    final server = Jaguar(securityContext: security, port: 8006);
     server.addRoute(serveFlutterAssets());
     await server.serve(logRequests: false);
   }
