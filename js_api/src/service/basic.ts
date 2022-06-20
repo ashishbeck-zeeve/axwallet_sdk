@@ -1,9 +1,8 @@
-import { axia, assetChain, coreChain, appChain } from "../constants/networkSpect";
-import { BinTools, Mnemonic } from "@zee-ava/avajs"
-import HDNode from "@zee-ava/avajs/dist/utils/hdnode"
+import { avalanche, xChain, pChain, cChain } from "../constants/networkSpect";
+import { BinTools, Mnemonic, HDNode } from "avalanche"
 
 async function getBalance(addr?: string) {
-  var bal = await assetChain.getBalance(addr == null ? "X-fuji1ga5ayv3elufyrmc3j83sau43vmwra9nvyc5mvx" : addr, "AVAX");
+  var bal = await xChain.getBalance(addr == null ? "X-fuji1ga5ayv3elufyrmc3j83sau43vmwra9nvyc5mvx" : addr, "AVAX");
   // var bal = await coreChain.getBalance("P-fuji1ga5ayv3elufyrmc3j83sau43vmwra9nvyc5mvx");
   // var bal = await appChain.getAssetBalance("0x3f3bc634bac77e34cb4aaae1133a8238390b054e", "0", "AVAX");
   console.log("balance is");
@@ -12,7 +11,7 @@ async function getBalance(addr?: string) {
 }
 
 async function createKeychain() {
-  const myKeychain = assetChain.keyChain()
+  const myKeychain = xChain.keyChain()
   // const bintools = BinTools.getInstance()
   // const mypk = bintools.cb58Decode(
   //   "JaCCSxdoWfo3ao5KwenXrJjJR7cBTQ287G1C5qpv2hr2tCCdb"

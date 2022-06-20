@@ -1,7 +1,7 @@
-import { axia, assetChain, coreChain, appChain } from "../constants/networkSpect";
+import { avalanche, xChain, pChain, cChain } from "../constants/networkSpect";
 
 async function getValidators() {
-  var validators = await coreChain.getCurrentValidators();
+  var validators = await pChain.getCurrentValidators();
   console.log("validators are");
   console.log(JSON.stringify(validators));
   console.log("eof");
