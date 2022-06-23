@@ -7,15 +7,23 @@ class ApiBasic {
   final SubstrateApi apiRoot;
   final ServiceBasic service;
 
-  Future getBalance({String? address}) async {
-    final res = await service.getBalance(
-      address: address,
-    );
+  Future init({String? mnemonic}) async {
+    final res = await service.init(mnemonic: mnemonic);
     return res;
   }
 
-  Future<dynamic> createKeychain() async {
-    final res = await service.createKeychain();
+  Future getWallet() async {
+    final res = await service.getWallet();
+    return res;
+  }
+
+  Future getBalance() async {
+    final res = await service.getBalance();
+    return res;
+  }
+
+  Future changeNetwork({bool isTestNet = true}) async {
+    final res = await service.changeNetwork(isTestNet: isTestNet);
     return res;
   }
 }

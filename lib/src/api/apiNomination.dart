@@ -11,4 +11,17 @@ class ApiNomination {
     final res = await service.getValidators();
     return res;
   }
+
+  Future delegateNode({
+    required String nodeID,
+    required String amount,
+    required int end,
+  }) async {
+    final res = await service.delegateNode(
+      nodeID: nodeID,
+      amount: amount,
+      end: end,
+    );
+    return res;
+  }
 }

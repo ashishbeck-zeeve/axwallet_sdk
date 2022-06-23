@@ -5,15 +5,25 @@ class ServiceBasic {
 
   final SubstrateService serviceRoot;
 
-  Future getBalance({String? address}) async {
+  Future init({String? mnemonic}) async {
     final res = await serviceRoot.webView
-        .evalJavascript('basic.getBalance("$address")');
+        .evalJavascript('basic.init(${mnemonic != null ? "$mnemonic" : null})');
     return res;
   }
 
-  Future<dynamic> createKeychain() async {
-    final res =
-        await serviceRoot.webView.evalJavascript('basic.createKeychain()');
+  Future getWallet() async {
+    final res = await serviceRoot.webView.evalJavascript('basic.getWallet()');
+    return res;
+  }
+
+  Future getBalance() async {
+    final res = await serviceRoot.webView.evalJavascript('basic.getBalance()');
+    return res;
+  }
+
+  Future changeNetwork({bool isTestNet = true}) async {
+    final res = await serviceRoot.webView
+        .evalJavascript('basic.changeNetwork($isTestNet)');
     return res;
   }
 }

@@ -10,4 +10,16 @@ class ServiceNomination {
         await serviceRoot.webView.evalJavascript('nomination.getValidators()');
     return res;
   }
+
+  Future delegateNode({
+    required String nodeID,
+    required String amount,
+    required int end,
+  }) async {
+    int bufferTime = 600000; // 10 minutes
+    int start = DateTime.now().millisecondsSinceEpoch + bufferTime;
+    final res = await serviceRoot.webView.evalJavascript(
+        'nomination.delegateNode("$nodeID", "$amount", $start, $end)');
+    return res;
+  }
 }

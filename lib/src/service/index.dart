@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:axwallet_sdk/src/service/basic.dart';
 import 'package:axwallet_sdk/src/service/nomination.dart';
+import 'package:axwallet_sdk/src/service/transfer.dart';
 import 'package:axwallet_sdk/src/webViewRunner.dart';
 
 class SubstrateService {
   late ServiceBasic basic;
   late ServiceNomination nomination;
+  late ServiceTransfer transfer;
 
   late WebViewRunner _web;
 
@@ -19,6 +21,7 @@ class SubstrateService {
   }) async {
     basic = ServiceBasic(this);
     nomination = ServiceNomination(this);
+    transfer = ServiceTransfer(this);
 
     _web = webViewParam ?? WebViewRunner();
     await _web.launch(onInitiated, jsCode: jsCode);
