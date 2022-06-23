@@ -33,7 +33,7 @@ class WebViewRunner {
 
     _jsCode = jsCode ??
         await rootBundle
-            .loadString('packages/substrate_sdk/js_api/dist/main.js');
+            .loadString('packages/axwallet_sdk/js_api/dist/main.js');
     print('js file loading');
 
     if (_web == null) {
@@ -97,9 +97,9 @@ class WebViewRunner {
 
   Future<void> _startLocalServer() async {
     final cert =
-        await rootBundle.load("packages/substrate_sdk/lib/ssl/certificate.txt");
+        await rootBundle.load("packages/axwallet_sdk/lib/ssl/certificate.txt");
     final keys =
-        await rootBundle.load("packages/substrate_sdk/lib/ssl/keys.txt");
+        await rootBundle.load("packages/axwallet_sdk/lib/ssl/keys.txt");
     final security = SecurityContext()
       ..useCertificateChainBytes(cert.buffer.asInt8List())
       ..usePrivateKeyBytes(keys.buffer.asInt8List());
