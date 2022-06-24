@@ -4,7 +4,7 @@ import 'package:axwallet_sdk/src/service/transfer.dart';
 class ApiTransfer {
   ApiTransfer(this.apiRoot, this.service);
 
-  final SubstrateApi apiRoot;
+  final Api apiRoot;
   final ServiceTransfer service;
 
   Future sameChain({

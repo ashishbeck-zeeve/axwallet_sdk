@@ -5,7 +5,7 @@ import 'package:axwallet_sdk/src/service/nomination.dart';
 import 'package:axwallet_sdk/src/service/transfer.dart';
 import 'package:axwallet_sdk/src/webViewRunner.dart';
 
-class SubstrateService {
+class Service {
   late ServiceBasic basic;
   late ServiceNomination nomination;
   late ServiceTransfer transfer;

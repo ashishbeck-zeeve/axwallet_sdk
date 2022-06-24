@@ -3,7 +3,7 @@ import 'package:axwallet_sdk/src/service/index.dart';
 class ServiceBasic {
   ServiceBasic(this.serviceRoot);
 
-  final SubstrateService serviceRoot;
+  final Service serviceRoot;
 
   Future init({String? mnemonic}) async {
     final res = await serviceRoot.webView

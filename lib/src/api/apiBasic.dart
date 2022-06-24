@@ -4,7 +4,7 @@ import 'package:axwallet_sdk/src/service/basic.dart';
 class ApiBasic {
   ApiBasic(this.apiRoot, this.service);
 
-  final SubstrateApi apiRoot;
+  final Api apiRoot;
   final ServiceBasic service;
 
   Future init({String? mnemonic}) async {

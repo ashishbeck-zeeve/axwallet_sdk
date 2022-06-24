@@ -10,10 +10,10 @@ export 'package:axwallet_sdk/src/api/index.dart';
 export 'package:axwallet_sdk/src/service/index.dart';
 export 'package:axwallet_sdk/src/webViewRunner.dart';
 
-class SubstrateSDK {
-  SubstrateApi? api;
+class AXwalletSDK {
+  Api? api;
 
-  late SubstrateService _service;
+  late Service _service;
 
   WebViewRunner get webView => _service.webView;
 
@@ -23,7 +23,7 @@ class SubstrateSDK {
   }) async {
     final c = Completer();
 
-    _service = SubstrateService();
+    _service = Service();
     await _service.init(
       webViewParam: webView,
       jsCode: jsCode,
@@ -34,7 +34,7 @@ class SubstrateSDK {
       },
     );
 
-    api = SubstrateApi(_service)..init();
+    api = Api(_service)..init();
     return c.future;
   }
 }

@@ -5,10 +5,10 @@ import 'package:axwallet_sdk/src/api/apiNomination.dart';
 import 'package:axwallet_sdk/src/api/apiTransfer.dart';
 import 'package:axwallet_sdk/src/service/index.dart';
 
-class SubstrateApi {
-  SubstrateApi(this.service);
+class Api {
+  Api(this.service);
 
-  final SubstrateService service;
+  final Service service;
 
   late ApiBasic basic;
   late ApiNomination nomination;

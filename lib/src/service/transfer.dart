@@ -3,7 +3,7 @@ import 'package:axwallet_sdk/src/service/index.dart';
 class ServiceTransfer {
   ServiceTransfer(this.serviceRoot);
 
-  final SubstrateService serviceRoot;
+  final Service serviceRoot;
 
   Future sameChain({
     required String to,

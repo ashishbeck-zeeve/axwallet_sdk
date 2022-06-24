@@ -4,7 +4,7 @@ import 'package:axwallet_sdk/src/service/nomination.dart';
 class ApiNomination {
   ApiNomination(this.apiRoot, this.service);
 
-  final SubstrateApi apiRoot;
+  final Api apiRoot;
   final ServiceNomination service;
 
   Future getValidators() async {

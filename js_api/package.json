@@ -1,12 +1,16 @@
 {
   "name": "@axiawallet_sdk/js-api",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "index.js",
   "license": "Apache-2.0",
   "keywords": [
     "AXIA",
     "AXIA Wallet",
-    "AXIA Wallet SDK"
+    "AX Wallet",
+    "AXwallet",
+    "AXIA Wallet SDK",
+    "AX Wallet SDK",
+    "AXwallet SDK"
   ],
   "author": "Ashish Beck <ashish.beck@zeeve.io>",
   "maintainers": [
@@ -14,10 +18,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ashishbeck-zeeve/axiawallet_sdk.git"
+    "url": "git+https://github.com/ashishbeck-zeeve/axwallet_sdk.git"
   },
   "bugs": {
-    "url": "https://github.com/ashishbeck-zeeve/axiawallet_sdk/issues"
+    "url": "https://github.com/ashishbeck-zeeve/axwallet_sdk/issues"
   },
   "scripts": {
     "clean": "rm -rf dist/*",
