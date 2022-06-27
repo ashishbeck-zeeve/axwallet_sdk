@@ -6,14 +6,14 @@ async function getValidators() {
   var validators = await pChain.getCurrentValidators()
   const data = JSON.stringify(validators)
   console.log(data)
-  return data
+  return validators
 }
 
-async function delegateNode(nodeID: string, amount: string, start: number, end: number) {
+async function delegateNode(nodeID: string, amount: string, start: number, end: number, rewardAddress?: string) {
   const wallet = myWallet // await generateMnemonicWallet(mnemonic)
   await syncWallet(wallet)
-  const txid = await wallet.delegate(nodeID, new BN(amount), new Date(start), new Date(end))
-  return txid
+  const txid = await wallet.delegate(nodeID, new BN(amount), new Date(start), new Date(end), rewardAddress)
+  return { "txID": txid }
 }
 
 export default {

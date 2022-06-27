@@ -1,5 +1,5 @@
 import { avalanche, xChain, pChain, cChain } from "../constants/networkSpect";
-import { BinTools, Mnemonic, HDNode} from "avalanche"
+import { BinTools, Mnemonic, HDNode, BN } from "avalanche"
 import { bnToAvaxC, bnToAvaxP, bnToAvaxX, MnemonicWallet, setNetworkAsync, MainnetConfig } from "@avalabs/avalanche-wallet-sdk"
 import { testNetConfig } from "../constants/networkConfigs";
 
@@ -86,20 +86,16 @@ async function init(mnemonic?: string) {
 
   if (mnemonic != null) {
     // generate default wallet with mnemonic
+    console.log("Generating wallet. Please wait...")
     myWallet = await generateMnemonicWallet(mnemonic)
   }
 
 }
 
 async function test() {
-  // const wallet: MnemonicWallet = await generateMnemonicWallet("item ask cook trumpet foil glance unique outdoor erode address long actual century match valve finish bacon travel uncover pyramid nature balcony purse silk")
-  if (myWallet == null) {
-    console.log("null wallet")
-    myWallet = await generateMnemonicWallet("item ask cook trumpet foil glance unique outdoor erode address long actual century match valve finish bacon travel uncover pyramid nature balcony purse silk")
-  } else {
-    console.log("wallet is not null")
-    getWallet()
-  }
+  const min = await pChain.getMinStake()
+  console.log(bnToAvaxX(min.minValidatorStake))
+  console.log(bnToAvaxX(min.minDelegatorStake))
 }
 
 // async function createKeychain() {

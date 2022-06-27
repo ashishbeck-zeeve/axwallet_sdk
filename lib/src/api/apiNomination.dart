@@ -16,11 +16,13 @@ class ApiNomination {
     required String nodeID,
     required String amount,
     required int end,
+    String? rewardAddress,
   }) async {
     final res = await service.delegateNode(
       nodeID: nodeID,
       amount: amount,
       end: end,
+      rewardAddress: rewardAddress,
     );
     return res;
   }

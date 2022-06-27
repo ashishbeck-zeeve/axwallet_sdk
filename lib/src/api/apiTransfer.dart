@@ -7,6 +7,11 @@ class ApiTransfer {
   final Api apiRoot;
   final ServiceTransfer service;
 
+  Future getFee({required String chainID, required bool isExport}) async {
+    final res = await service.getFee(chainID: chainID, isExport: isExport);
+    return res;
+  }
+
   Future sameChain({
     required String to,
     required String amount,

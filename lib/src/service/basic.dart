@@ -6,8 +6,9 @@ class ServiceBasic {
   final Service serviceRoot;
 
   Future init({String? mnemonic}) async {
-    final res = await serviceRoot.webView
-        .evalJavascript('basic.init(${mnemonic != null ? "$mnemonic" : null})');
+    final res = mnemonic != null
+        ? await serviceRoot.webView.evalJavascript('basic.init("$mnemonic")')
+        : await serviceRoot.webView.evalJavascript('basic.init()');
     return res;
   }
 

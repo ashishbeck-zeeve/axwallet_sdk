@@ -5,6 +5,12 @@ class ServiceTransfer {
 
   final Service serviceRoot;
 
+  Future getFee({required String chainID, required bool isExport}) async {
+    final res = await serviceRoot.webView
+        .evalJavascript('transfer.getFee("$chainID", $isExport)');
+    return res;
+  }
+
   Future sameChain({
     required String to,
     required String amount,
