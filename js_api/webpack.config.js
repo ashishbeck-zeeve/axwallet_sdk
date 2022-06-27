@@ -9,7 +9,17 @@ const config = {
   },
   resolve: {
     extensions: [".ts", ".js", ".mjs", ".json"],
-    fallback: { crypto: require.resolve("crypto-browserify"), stream: require.resolve("stream-browserify") },
+    fallback: {
+      "fs": false,
+      "tls": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "http": false,
+      "os": false,
+      "https": false,
+      crypto: require.resolve("crypto-browserify"), stream: require.resolve("stream-browserify"),
+    },
   },
   plugins: [
     new webpack.ProvidePlugin({

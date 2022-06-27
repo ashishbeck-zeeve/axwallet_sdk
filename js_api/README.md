@@ -1,6 +1,6 @@
 # js_api
 
-Wrap `@axia-js/api` to provide APIs for substrate based wallets.
+Wrap `@axia-js/api` to provide APIs for AXwallet.
 <!-- 
 @axia-js-js/api: ^v1.29.1 -->
 

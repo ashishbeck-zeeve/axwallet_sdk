@@ -1,4 +1,5 @@
 import { Avalanche } from "avalanche";
+import { testNetConfig } from "./networkConfigs";
 const ip: string = 'api.avax-test.network'
 const port: number = 443
 const protocol: string = 'https'

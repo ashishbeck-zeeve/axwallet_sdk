@@ -3,17 +3,28 @@ import 'package:axwallet_sdk/src/service/index.dart';
 class ServiceBasic {
   ServiceBasic(this.serviceRoot);
 
-  final SubstrateService serviceRoot;
+  final Service serviceRoot;
 
-  Future getBalance({String? address}) async {
-    final res = await serviceRoot.webView
-        .evalJavascript('basic.getBalance("$address")');
+  Future init({String? mnemonic}) async {
+    final res = mnemonic != null
+        ? await serviceRoot.webView.evalJavascript('basic.init("$mnemonic")')
+        : await serviceRoot.webView.evalJavascript('basic.init()');
     return res;
   }
 
-  Future<dynamic> createKeychain() async {
-    final res =
-        await serviceRoot.webView.evalJavascript('basic.createKeychain()');
+  Future getWallet() async {
+    final res = await serviceRoot.webView.evalJavascript('basic.getWallet()');
+    return res;
+  }
+
+  Future getBalance() async {
+    final res = await serviceRoot.webView.evalJavascript('basic.getBalance()');
+    return res;
+  }
+
+  Future changeNetwork({bool isTestNet = true}) async {
+    final res = await serviceRoot.webView
+        .evalJavascript('basic.changeNetwork($isTestNet)');
     return res;
   }
 }
