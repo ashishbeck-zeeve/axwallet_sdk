@@ -1,4 +1,4 @@
-import { Mnemonic, HDNode, Buffer } from "avalanche";
+import { Mnemonic, HDNode, Buffer, Avalanche } from "avalanche";
 import { xChain } from "../constants/networkSpect";
 
 
@@ -33,7 +33,40 @@ console.log(xAddressStrings);
 return xAddressStrings;
 }
 
+async function utils() {
+
+  const myNetworkID = 12345 //default is 1, we want to override that for our local network
+  const avalanche = new Avalanche("localhost", 9650, "http", myNetworkID)
+
+  // returns a reference to the X-Chain used by AvalancheJS
+  const xchain = avalanche.XChain()
+  
+  // For C and P-Chain use methods avalanche.CChain() and avalanche.PChain()
+  
+  // X-Chain Keychain
+  const myKeychain = xchain.keyChain()
+  
+  // The KeyChain has the ability to create new KeyPairs and returns the address associated with the key pair.
+  const xaddress = myKeychain.makeKey()
+
+  // Function to fetch extended keys from the master address using HD Node
+  const fetchHDNode = async (address) => {
+      try {
+          const hdnode = new HDNode(address);
+          return hdnode.derive("m/9000'/2614666'/4849181'/4660'/2"); //e.g. "m/9000'/2614666'/4849181'/4660'/2"
+      } catch {
+          console.log("error");
+      }
+  };
+
+  // pass the address as a buffer or a string by using getAddressString()
+  const hdForXChain = fetchHDNode(xaddress.getAddress());
+  console.log('hd-x', hdForXChain);
+  return hdForXChain;
+};
+
 export default {
     getSeedPhrase,
-    deriveAddress
+    deriveAddress,
+    utils
 }

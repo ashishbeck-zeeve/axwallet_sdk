@@ -17,4 +17,10 @@ class ApiSeedPhrase {
     return res;
   }
 
+  Future utils() async {
+    final res =
+        await _serviceRoot.webView.evalJavascript("seedPhrase.utils()");
+    return res;
+  }
+
 }
