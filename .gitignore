@@ -31,4 +31,5 @@ build/
 
 js_api/node_modules/
 js_api/dist/main.js.LICENSE.txt
+js_api/dist/main.js
 js_as_extension/node_modules/
