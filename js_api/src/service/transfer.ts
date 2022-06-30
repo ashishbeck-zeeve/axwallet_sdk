@@ -33,6 +33,7 @@ async function sameChain(to: string, amount: string, chain: string, memo?: strin
     return txID
 }
 
+// add import fee to amount from UI
 async function crossChain(from: string, to: string, amount: string) {
     const wallet: MnemonicWallet = myWallet
     await syncWallet(wallet)

@@ -1,26 +1,20 @@
 import '../../axwallet_sdk.dart';
 
 class ApiSeedPhrase {
-  final SubstrateService _serviceRoot;
+  final Service _serviceRoot;
 
   ApiSeedPhrase(this._serviceRoot);
 
-  Future getSeedPhrase() async {
+  Future genSeedPhrase() async {
     final res =
-        await _serviceRoot.webView.evalJavascript("seedPhrase.getSeedPhrase()");
+        await _serviceRoot.webView.evalJavascript("seedPhrase.genSeedPhrase()");
     return res;
   }
 
-  Future deriveAddress(String mnemonic) async {
+  Future getWalletAddresses(String mnemonic) async {
     final res =
-        await _serviceRoot.webView.evalJavascript("seedPhrase.deriveAddress('$mnemonic')");
+        await _serviceRoot.webView.evalJavascript("seedPhrase.getWalletAddresses('$mnemonic')");
     return res;
-  }
-
-  Future utils() async {
-    final res =
-        await _serviceRoot.webView.evalJavascript("seedPhrase.utils()");
-    return res;
-  }
-
+  }  
+  
 }

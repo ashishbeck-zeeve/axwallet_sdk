@@ -11,13 +11,14 @@ const network_id: number = 5
 // const hrp: string = "custom"
 // const network_id: number = 0
 const chain_id: string = 'X'
-const avalanche: Avalanche = new Avalanche(ip, port, protocol, network_id, chain_id)
+
+const avalanche: Avalanche = new Avalanche(testNetConfig.apiIp, testNetConfig.apiPort, testNetConfig.apiProtocol,
+  testNetConfig.networkID)
 const xChain = avalanche.XChain() // X
 const pChain = avalanche.PChain() // P
 const cChain = avalanche.CChain() // C
 
 export {
-  avalanche,
   xChain,
   pChain,
   cChain,

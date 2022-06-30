@@ -1,8 +1,9 @@
-import { Mnemonic, HDNode, Buffer, Avalanche } from "avalanche";
-import { xChain } from "../constants/networkSpect";
+import { Mnemonic, HDNode, BinTools,  Buffer as BufferAvalanche} from "avalanche";
+import { pChain, xChain, cChain } from "../constants/networkSpect";
+import { MnemonicWallet } from "@avalabs/avalanche-wallet-sdk"
+import { privateToAddress } from 'ethereumjs-util'
 
-
-async function getSeedPhrase() {
+export async function genSeedPhrase() {
     const mnemonic: Mnemonic = Mnemonic.getInstance();
     const strength: number = 256;
     const wordlist = mnemonic.getWordlists("english") as string[];
@@ -11,62 +12,52 @@ async function getSeedPhrase() {
     return m;
 }
 
-async function deriveAddress(seedPhrase: string) {
-const mnemonic: Mnemonic = Mnemonic.getInstance(); 
-const myKeychain = xChain.keyChain()
-const seed: Buffer = mnemonic.mnemonicToSeedSync(seedPhrase);
-const hdnode: HDNode = new HDNode(seed);
-
-for (let i: number = 0; i <= 2; i++) {
-  // Deriving the _i_th external BIP44 X-Chain address
-  const child: HDNode = hdnode.derive(`m/44'/9000'/0'/0/${i}`);
-  myKeychain.importKey(child.privateKeyCB58);
+async function generateMnemonicWallet(mnemonic: string) {
+  const wallet = MnemonicWallet.fromMnemonic(mnemonic)
+  await wallet.resetHdIndices()
+  console.log("Wallet generated")
+  return wallet;
 }
 
-const xAddressStrings: string[] = xChain.keyChain().getAddressStrings();
-console.log(xAddressStrings);
-// [
-//   'X-fuji1cfvdpdqyzpp8pq0g6trmjsrn9pt8nutsfm7a40',
-//   'X-fuji1y75dj6qygj7frw2xtcfn724qfty4aadnmeth6y',
-//   'X-fuji1p6n0vyjqgmp06f7pr405q2flqu9v93j383ncam'
-// ]
-return xAddressStrings;
-}
+export async function getWalletAddresses(seedPhrase: string) {
+    const wallet: MnemonicWallet = await generateMnemonicWallet(seedPhrase)
+    const xKeychain = xChain.keyChain()
+    const mnemonic: Mnemonic = Mnemonic.getInstance();
+    const seed = mnemonic.mnemonicToSeedSync(wallet.getMnemonic());
+    const hdnode: HDNode = new HDNode(seed);
 
-async function utils() {
+    // Deriving the _i_th external BIP44 X-Chain address
+    const child: HDNode = hdnode.derive(`m/44'/9000'/0'/0/0`);
+    const childC: HDNode = hdnode.derive(`m/44'/60'/0'/0/0`);
 
-  const myNetworkID = 12345 //default is 1, we want to override that for our local network
-  const avalanche = new Avalanche("localhost", 9650, "http", myNetworkID)
+    xKeychain.importKey(child.privateKeyCB58);
+    
 
-  // returns a reference to the X-Chain used by AvalancheJS
-  const xchain = avalanche.XChain()
-  
-  // For C and P-Chain use methods avalanche.CChain() and avalanche.PChain()
-  
-  // X-Chain Keychain
-  const myKeychain = xchain.keyChain()
-  
-  // The KeyChain has the ability to create new KeyPairs and returns the address associated with the key pair.
-  const xaddress = myKeychain.makeKey()
+    let ethPrivateKey = childC.privateKey.toString('hex')
+    let ethAddress = privateToAddress(childC.privateKey).toString('hex')
+    let cPrivKey = `PrivateKey-` + BinTools.getInstance().cb58Encode(BufferAvalanche.from(childC.privateKey))
 
-  // Function to fetch extended keys from the master address using HD Node
-  const fetchHDNode = async (address) => {
-      try {
-          const hdnode = new HDNode(address);
-          return hdnode.derive("m/9000'/2614666'/4849181'/4660'/2"); //e.g. "m/9000'/2614666'/4849181'/4660'/2"
-      } catch {
-          console.log("error");
-      }
-  };
+    console.log("xChain addresses")
+    console.log(xKeychain.getAddressStrings())
+    console.log(child.publicExtendedKey) // remove last two /0/0 to get correct xpub
 
-  // pass the address as a buffer or a string by using getAddressString()
-  const hdForXChain = fetchHDNode(xaddress.getAddress());
-  console.log('hd-x', hdForXChain);
-  return hdForXChain;
-};
+    console.log("cChain addresses")
+    console.log(ethPrivateKey)
+    console.log(ethAddress)
+    console.log(cPrivKey)
+
+    const x = wallet.getAddressX()
+    const p = wallet.getAddressP()
+    const c = wallet.getAddressC()
+    const data = {
+      "X": x,
+      "P": p,
+      "C": c,
+    }
+    return data
+  }
 
 export default {
-    getSeedPhrase,
-    deriveAddress,
-    utils
+    genSeedPhrase,
+    getWalletAddresses,
 }

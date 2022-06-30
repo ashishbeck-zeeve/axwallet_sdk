@@ -1,11 +1,11 @@
-import { avalanche, xChain, pChain, cChain } from "../constants/networkSpect";
+import { xChain, pChain, cChain } from "../constants/networkSpect";
 import { BinTools, Mnemonic, HDNode, BN } from "avalanche"
 import { bnToAvaxC, bnToAvaxP, bnToAvaxX, MnemonicWallet, setNetworkAsync, MainnetConfig } from "@avalabs/avalanche-wallet-sdk"
 import { testNetConfig } from "../constants/networkConfigs";
 
 export let myWallet: MnemonicWallet;
 
-async function generateMnemonicWallet(mnemonic: string) {
+export async function generateMnemonicWallet(mnemonic: string) {
   const wallet = MnemonicWallet.fromMnemonic(mnemonic)
   await wallet.resetHdIndices()
   await syncWallet(wallet)
@@ -31,7 +31,7 @@ async function changeNetwork(isTestNet: boolean) {
 }
 
 async function getWallet() {
-  const wallet: MnemonicWallet = myWallet // await generateMnemonicWallet(mnemonic)
+  const wallet: MnemonicWallet = myWallet //yar await generateMnemonicWallet(mnemonic)
   // await syncWallet(wallet)
   // console.log("all addresses")
   // console.log(wallet.getAllAddressesPSync())
