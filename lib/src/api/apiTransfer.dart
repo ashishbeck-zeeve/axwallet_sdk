@@ -12,6 +12,17 @@ class ApiTransfer {
     return res;
   }
 
+  Future getAdjustedGasPrice() async {
+    final res = await service.getAdjustedGasPrice();
+    return res;
+  }
+
+  Future getEstimatedGasLimit(
+      {required String to, required String amount}) async {
+    final res = await service.getEstimatedGasLimit(to: to, amount: amount);
+    return res;
+  }
+
   Future sameChain({
     required String to,
     required String amount,

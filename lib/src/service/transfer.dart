@@ -11,6 +11,19 @@ class ServiceTransfer {
     return res;
   }
 
+  Future getAdjustedGasPrice() async {
+    final res = await serviceRoot.webView
+        .evalJavascript('transfer.getAdjustedGasPrice()');
+    return res;
+  }
+
+  Future getEstimatedGasLimit(
+      {required String to, required String amount}) async {
+    final res = await serviceRoot.webView
+        .evalJavascript('transfer.getEstimatedGasLimit("$to", "$amount")');
+    return res;
+  }
+
   Future sameChain({
     required String to,
     required String amount,

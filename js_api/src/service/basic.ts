@@ -1,6 +1,6 @@
 import { xChain, pChain, cChain } from "../constants/networkSpect";
 import { BinTools, Mnemonic, HDNode, BN } from "avalanche"
-import { bnToAvaxC, bnToAvaxP, bnToAvaxX, MnemonicWallet, setNetworkAsync, MainnetConfig } from "@avalabs/avalanche-wallet-sdk"
+import { bnToAvaxC, bnToAvaxP, bnToAvaxX, MnemonicWallet, setNetworkAsync, MainnetConfig, GasHelper } from "@avalabs/avalanche-wallet-sdk"
 import { testNetConfig } from "../constants/networkConfigs";
 
 export let myWallet: MnemonicWallet;
@@ -31,8 +31,8 @@ async function changeNetwork(isTestNet: boolean) {
 }
 
 async function getWallet() {
-  const wallet: MnemonicWallet = myWallet //yar await generateMnemonicWallet(mnemonic)
-  // await syncWallet(wallet)
+  const wallet: MnemonicWallet = myWallet // await generateMnemonicWallet(mnemonic)
+  await syncWallet(wallet)
   // console.log("all addresses")
   // console.log(wallet.getAllAddressesPSync())
   // console.log(await wallet.getAllAddressesP())
@@ -44,22 +44,26 @@ async function getWallet() {
   // console.log("internal addresses")
   // console.log(wallet.getInternalAddressesXSync())
   // console.log(await wallet.getInternalAddressesX())
-  const myKeychain = pChain.keyChain()
-  const mnemonic: Mnemonic = Mnemonic.getInstance();
-  const seed = mnemonic.mnemonicToSeedSync(myWallet.getMnemonic());
-  const hdnode: HDNode = new HDNode(seed);
-  // Deriving the _i_th external BIP44 X-Chain address
-  const child: HDNode = hdnode.derive(`m/44'/9000'/0'/0/0`);
-  myKeychain.importKey(child.privateKeyCB58);
-  const pAddressStrings: string[] = myKeychain.getAddressStrings();
-  console.log(pAddressStrings)
-  const x = pAddressStrings[0] //(wallet.getChangeAddressX())
-  const p = pAddressStrings[0] //(wallet.getAddressP())
+  // const myKeychain = pChain.keyChain()
+  // const mnemonic: Mnemonic = Mnemonic.getInstance();
+  // const seed = mnemonic.mnemonicToSeedSync(myWallet.getMnemonic());
+  // const hdnode: HDNode = new HDNode(seed);
+  // // Deriving the _i_th external BIP44 X-Chain address
+  // const child: HDNode = hdnode.derive(`m/44'/9000'/0'/0/0`);
+  // myKeychain.importKey(child.privateKeyCB58);
+  // const pAddressStrings: string[] = myKeychain.getAddressStrings();
+  // console.log(pAddressStrings)
+  const x = (wallet.getAddressX()) //(wallet.getChangeAddressX())
+  const p = (wallet.getAddressP())
   const c = (wallet.getAddressC())
+  const allX = wallet.getAllAddressesXSync()
+  const allP = wallet.getAllAddressesPSync()
   const data = {
     "X": x,
     "P": p,
     "C": c,
+    "allX": allX,
+    "allP": allP,
   }
   console.log(data)
   return data
@@ -73,10 +77,13 @@ async function getBalance() {
   const pBal = bnToAvaxP(bal.P.unlocked);
   const cBal = bnToAvaxC(bal.C);
   console.log([xBal, pBal, cBal])
+  const staked = bnToAvaxP((await wallet.getStake()).staked)
+  console.log(staked)
   return {
     "X": xBal,
     "P": pBal,
     "C": cBal,
+    "staked": staked,
   }
 }
 
@@ -93,9 +100,10 @@ async function init(mnemonic?: string) {
 }
 
 async function test() {
-  const min = await pChain.getMinStake()
-  console.log(bnToAvaxX(min.minValidatorStake))
-  console.log(bnToAvaxX(min.minDelegatorStake))
+  const gasPrice = parseInt(await cChain.getBaseFee(), 16)
+  const adjusted =  await GasHelper.getAdjustedGasPrice()
+  console.log(gasPrice)
+  console.log(bnToAvaxC(adjusted))
 }
 
 // async function createKeychain() {
