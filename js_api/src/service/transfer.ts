@@ -1,6 +1,6 @@
 import { myWallet, syncWallet } from "./basic"
 import { cChain, pChain, xChain } from "../constants/networkSpect";
-import { MnemonicWallet, BN, bnToAvaxX, bnToAvaxP, GasHelper, bnToAvaxC } from "@avalabs/avalanche-wallet-sdk"
+import { MnemonicWallet, BN, bnToAvaxX, bnToAvaxP, GasHelper, bnToAvaxC, bnToLocaleString, TxHelper } from "@avalabs/avalanche-wallet-sdk"
 
 async function getFee(chain: string, isExport: boolean) {
     if (chain === 'X') {
@@ -24,13 +24,35 @@ async function getFee(chain: string, isExport: boolean) {
     }
 }
 
+async function getAdjustedGasPrice() {
+    const gasPrice = await GasHelper.getAdjustedGasPrice()
+    return bnToAvaxC(gasPrice)
+}
+
+async function getEstimatedGasLimit(to: string, amount: string) {
+    const gasPrice = await GasHelper.getAdjustedGasPrice()
+    const gasLimit = await TxHelper.estimateAvaxGas(
+        myWallet.getAddressC(),
+        to,
+        new BN(amount),
+        gasPrice
+    )
+    return gasLimit
+}
+
 async function sameChain(to: string, amount: string, chain: string, memo?: string) {
     const wallet: MnemonicWallet = myWallet
     await syncWallet(wallet)
-    const gasPrice = parseInt(await cChain.getBaseFee(), 16)
-    const txID = chain == "X" ? await wallet.sendAvaxX(to, new BN(amount), memo) : await wallet.sendAvaxC(to, new BN(amount), new BN(gasPrice), 21000)
+    //const gasPrice = parseInt(await cChain.getBaseFee(), 16)
+    const gasPrice = await GasHelper.getAdjustedGasPrice()
+    const gasLimit = await getEstimatedGasLimit(to, amount)
+    const txID = chain == "X" ? await wallet.sendAvaxX(to, new BN(amount), memo) : await wallet.sendAvaxC(to, new BN(amount), gasPrice, gasLimit)
     console.log(txID)
-    return txID
+    const data = {
+        "txID": txID,
+    }
+    console.log(data)
+    return data
 }
 
 async function crossChain(from: string, to: string, amount: string) {
@@ -120,6 +142,8 @@ async function _waitExportStatus(chain: string, txID: string, remainingTries = 1
 
 export default {
     getFee,
+    getAdjustedGasPrice,
+    getEstimatedGasLimit,
     sameChain,
     crossChain,
 }
