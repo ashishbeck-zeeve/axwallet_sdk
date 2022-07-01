@@ -1,38 +1,39 @@
 import { myWallet, syncWallet } from "./basic"
-import { cChain, pChain, xChain } from "../constants/networkSpect";
-import { MnemonicWallet, BN, bnToAvaxX, bnToAvaxP, GasHelper, bnToAvaxC, bnToLocaleString, TxHelper } from "@avalabs/avalanche-wallet-sdk"
+import { axChain, coreChain, swapChain } from "../constants/networkSpect";
+// import { MnemonicWallet, BN, bnToAvaxX, bnToAvaxP, GasHelper, bnToAvaxC, bnToLocaleString, TxHelper } from "@avalabs/avalanche-wallet-sdk"
+import { MnemonicWallet, BN, Utils, GasHelper, TxHelper } from "@axia-systems/wallet-sdk"
 
 async function getFee(chain: string, isExport: boolean) {
-    if (chain === 'X') {
-        console.log(bnToAvaxX(xChain.getTxFee()))
-        return bnToAvaxX(xChain.getTxFee())
-    } else if (chain === 'P') {
-        console.log(bnToAvaxP(pChain.getTxFee()))
-        return bnToAvaxX(pChain.getTxFee())
+    if (chain === 'Swap') {
+        console.log(Utils.bnToAxcSwap(swapChain.getTxFee()))
+        return Utils.bnToAxcSwap(swapChain.getTxFee())
+    } else if (chain === 'Core') {
+        console.log(Utils.bnToAxcCore(coreChain.getTxFee()))
+        return Utils.bnToAxcSwap(coreChain.getTxFee())
     } else {
         const fee = isExport
             ? GasHelper.estimateExportGasFeeFromMockTx(
-                "X",
+                "Swap",
                 new BN(1000000),
-                myWallet.getAddressC(),
-                myWallet.getAddressX()
+                myWallet.getAddressAX(),
+                myWallet.getAddressSwap()
             )
             : GasHelper.estimateImportGasFeeFromMockTx(1, 1)
         const baseFee = await GasHelper.getBaseFeeRecommended()
         const totFeeWei = baseFee.mul(new BN(fee))
-        return bnToAvaxC(totFeeWei)
+        return Utils.bnToAxcAX(totFeeWei)
     }
 }
 
 async function getAdjustedGasPrice() {
     const gasPrice = await GasHelper.getAdjustedGasPrice()
-    return bnToAvaxC(gasPrice)
+    return Utils.bnToAxcAX(gasPrice)
 }
 
 async function getEstimatedGasLimit(to: string, amount: string) {
     const gasPrice = await GasHelper.getAdjustedGasPrice()
-    const gasLimit = await TxHelper.estimateAvaxGas(
-        myWallet.getAddressC(),
+    const gasLimit = await TxHelper.estimateAxcGas(
+        myWallet.getAddressAX(),
         to,
         new BN(amount),
         gasPrice
@@ -46,7 +47,7 @@ async function sameChain(to: string, amount: string, chain: string, memo?: strin
     //const gasPrice = parseInt(await cChain.getBaseFee(), 16)
     const gasPrice = await GasHelper.getAdjustedGasPrice()
     const gasLimit = await getEstimatedGasLimit(to, amount)
-    const txID = chain == "X" ? await wallet.sendAvaxX(to, new BN(amount), memo) : await wallet.sendAvaxC(to, new BN(amount), gasPrice, gasLimit)
+    const txID = chain == "Swap" ? await wallet.sendAxcSwap(to, new BN(amount), memo) : await wallet.sendAxcAX(to, new BN(amount), gasPrice, gasLimit)
     console.log(txID)
     const data = {
         "txID": txID,
@@ -62,25 +63,25 @@ async function crossChain(from: string, to: string, amount: string) {
     let importID: string
     let hasExported = false
     switch (from) {
-        case "X":
-            exportID = await wallet.exportXChain(new BN(amount), to == "P" ? "P" : "C")
-            hasExported = await _waitExportStatus("X", exportID)
+        case "Swap":
+            exportID = await wallet.exportSwapChain(new BN(amount), to == "Core" ? "Core" : "AX")
+            hasExported = await _waitExportStatus("Swap", exportID)
             if (!hasExported) break;
-            importID = to == "P" ? await wallet.importP("X") : await wallet.importC("X")
+            importID = to == "Core" ? await wallet.importCore("Swap") : await wallet.importAX("Swap")
             break;
 
-        case "P":
-            exportID = await wallet.exportPChain(new BN(amount), to == "X" ? "X" : "C")
-            hasExported = await _waitExportStatus("P", exportID)
+        case "Core":
+            exportID = await wallet.exportCoreChain(new BN(amount), to == "Swap" ? "Swap" : "AX")
+            hasExported = await _waitExportStatus("Core", exportID)
             if (!hasExported) break;
-            importID = to == "X" ? await wallet.importX("P") : await wallet.importC("P")
+            importID = to == "Swap" ? await wallet.importSwap("Core") : await wallet.importAX("Core")
             break;
 
-        case "C":
-            exportID = await wallet.exportCChain(new BN(amount), to == "P" ? "P" : "X")
-            hasExported = await _waitExportStatus("C", exportID)
+        case "AX":
+            exportID = await wallet.exportAXChain(new BN(amount), to == "Core" ? "Core" : "Swap")
+            hasExported = await _waitExportStatus("AX", exportID)
             if (!hasExported) break;
-            importID = to == "P" ? await wallet.importP("C") : await wallet.importX("C")
+            importID = to == "Core" ? await wallet.importCore("AX") : await wallet.importSwap("AX")
             break;
 
         default:
@@ -97,19 +98,19 @@ async function crossChain(from: string, to: string, amount: string) {
 async function _waitExportStatus(chain: string, txID: string, remainingTries = 15): Promise<boolean> {
     let status
     switch (chain) {
-        case "X":
-            status = await xChain.getTxStatus(txID)
+        case "Swap":
+            status = await swapChain.getTxStatus(txID)
             break;
-        case "P":
-            let resp = await pChain.getTxStatus(txID)
+        case "Core":
+            let resp = await coreChain.getTxStatus(txID)
             if (typeof resp === 'string') {
                 status = resp
             } else {
                 status = resp.status
             }
             break;
-        case "C":
-            status = await cChain.getAtomicTxStatus(txID)
+        case "AX":
+            status = await axChain.getAtomicTxStatus(txID)
             break;
 
         default:

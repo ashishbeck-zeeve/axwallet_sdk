@@ -1,6 +1,6 @@
 {
   "name": "@axiawallet_sdk/js-api",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "main": "index.js",
   "license": "Apache-2.0",
   "keywords": [
@@ -29,12 +29,15 @@
     "build-dev": "webpack --mode development"
   },
   "dependencies": {
-    "@avalabs/avalanche-wallet-sdk": "^0.18.0",
-    "avalanche": "3.15.1",
+    "@axia-systems/axiajs": "2.0.4",
+    "@axia-systems/wallet-sdk": "2.0.2",
     "bn.js": "^5.1.2",
+    "https-browserify": "^1.0.0",
+    "node-polyfill-webpack-plugin": "^2.0.0",
     "oo7-substrate": "^0.8.0",
     "process": "^0.11.10",
     "secp256k1": "^3.8.0",
+    "stream-http": "^3.2.0",
     "typescript": "^4.3.5"
   },
   "devDependencies": {

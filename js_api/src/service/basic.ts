@@ -1,7 +1,8 @@
-import { avalanche, xChain, pChain, cChain } from "../constants/networkSpect";
-import { BinTools, Mnemonic, HDNode, BN } from "avalanche"
-import { bnToAvaxC, bnToAvaxP, bnToAvaxX, MnemonicWallet, setNetworkAsync, MainnetConfig, GasHelper } from "@avalabs/avalanche-wallet-sdk"
-import { testNetConfig } from "../constants/networkConfigs";
+import { axChain } from "../constants/networkSpect";
+// import { BinTools, Mnemonic, HDNode, BN } from "avalanche"
+// import { bnToAvaxC, bnToAvaxP, bnToAvaxX, MnemonicWallet, setNetworkAsync, MainnetConfig, GasHelper } from "@avalabs/avalanche-wallet-sdk"
+import {  Utils, MnemonicWallet, Network, GasHelper } from "@axia-systems/wallet-sdk"
+import { testNetConfig, axTestNetConfig } from "../constants/networkConfigs";
 
 export let myWallet: MnemonicWallet;
 
@@ -15,15 +16,15 @@ async function generateMnemonicWallet(mnemonic: string) {
 
 export async function syncWallet(wallet: MnemonicWallet) {
   // await Promise.all([
-  await wallet.updateUtxosX()
-  await wallet.updateUtxosP()
-  await wallet.updateAvaxBalanceC()
+  await wallet.updateUtxosSwap()
+  await wallet.updateUtxosCore()
+  await wallet.updateAxcBalanceAX()
   // ])
 }
 
 async function changeNetwork(isTestNet: boolean) {
   try {
-    await setNetworkAsync(isTestNet ? testNetConfig : MainnetConfig)
+    await Network.setNetworkAsync(isTestNet ? testNetConfig : axTestNetConfig)
     console.log("Successfully changed to " + (isTestNet ? "Test" : "Main") + "Net")
   } catch (e) {
     console.log("Failed to change network")
@@ -53,17 +54,17 @@ async function getWallet() {
   // myKeychain.importKey(child.privateKeyCB58);
   // const pAddressStrings: string[] = myKeychain.getAddressStrings();
   // console.log(pAddressStrings)
-  const x = (wallet.getAddressX()) //(wallet.getChangeAddressX())
-  const p = (wallet.getAddressP())
-  const c = (wallet.getAddressC())
-  const allX = wallet.getAllAddressesXSync()
-  const allP = wallet.getAllAddressesPSync()
+  const swap = (wallet.getAddressSwap()) //(wallet.getChangeAddressX())
+  const core = (wallet.getAddressCore())
+  const ax = (wallet.getAddressAX())
+  const allSwap = wallet.getAllAddressesSwapSync()
+  const allCore = wallet.getAllAddressesCoreSync()
   const data = {
-    "X": x,
-    "P": p,
-    "C": c,
-    "allX": allX,
-    "allP": allP,
+    "swap": swap,
+    "core": core,
+    "ax": ax,
+    "allSwap": allSwap,
+    "allCore": allCore,
   }
   console.log(data)
   return data
@@ -72,24 +73,24 @@ async function getWallet() {
 async function getBalance() {
   const wallet: MnemonicWallet = myWallet // await generateMnemonicWallet(mnemonic)
   await syncWallet(wallet)
-  const bal = wallet.getAvaxBalance();
-  const xBal = bnToAvaxX(bal.X.unlocked);
-  const pBal = bnToAvaxP(bal.P.unlocked);
-  const cBal = bnToAvaxC(bal.C);
-  console.log([xBal, pBal, cBal])
-  const staked = bnToAvaxP((await wallet.getStake()).staked)
+  const bal = wallet.getAxcBalance();
+  const swapBal = Utils.bnToAxcSwap(bal.Swap.unlocked);
+  const coreBal = Utils.bnToAxcCore(bal.Core.unlocked);
+  const axBal = Utils.bnToAxcAX(bal.AX);
+  console.log([swapBal, coreBal, axBal])
+  const staked = Utils.bnToAxcCore((await wallet.getStake()).staked)
   console.log(staked)
   return {
-    "X": xBal,
-    "P": pBal,
-    "C": cBal,
+    "swap": swapBal,
+    "core": coreBal,
+    "ax": axBal,
     "staked": staked,
   }
 }
 
-async function init(mnemonic?: string) {
+async function init(mnemonic?: string, network?: boolean) {
   // set test net by default
-  await changeNetwork(true)
+  await changeNetwork(network ?? true)
 
   if (mnemonic != null) {
     // generate default wallet with mnemonic
@@ -100,10 +101,10 @@ async function init(mnemonic?: string) {
 }
 
 async function test() {
-  const gasPrice = parseInt(await cChain.getBaseFee(), 16)
+  const gasPrice = parseInt(await axChain.getBaseFee(), 16)
   const adjusted =  await GasHelper.getAdjustedGasPrice()
   console.log(gasPrice)
-  console.log(bnToAvaxC(adjusted))
+  console.log(Utils.bnToAxcCore(adjusted))
 }
 
 // async function createKeychain() {

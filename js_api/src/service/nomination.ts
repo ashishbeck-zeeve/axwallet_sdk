@@ -1,9 +1,9 @@
-import { pChain } from "../constants/networkSpect";
+import { coreChain } from "../constants/networkSpect";
 import { myWallet, syncWallet } from "./basic"
-import { BN } from "@avalabs/avalanche-wallet-sdk"
+import { BN } from "@axia-systems/wallet-sdk"
 
 async function getValidators() {
-  var validators = await pChain.getCurrentValidators()
+  var validators = await coreChain.getCurrentValidators()
   const data = JSON.stringify(validators)
   console.log(data)
   return validators

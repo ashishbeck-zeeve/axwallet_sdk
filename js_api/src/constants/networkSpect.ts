@@ -1,26 +1,28 @@
-import { Avalanche } from "avalanche";
+// import { Avalanche } from "avalanche";
+import { Axia } from "@axia-systems/axiajs";
 import { testNetConfig } from "./networkConfigs";
-const ip: string = 'api.avax-test.network'
+// const ip: string = 'api.avax-test.network'
+// const port: number = 443
+// const protocol: string = 'https'
+// const hrp: string = "fuji"
+// const network_id: number = 5
+// https://1.p2p-v2.testnet.axiacoin.network:443
+const ip: string = '1.p2p-v2.testnet.axiacoin.network'
 const port: number = 443
 const protocol: string = 'https'
-const hrp: string = "fuji"
-const network_id: number = 5
-// const ip: string = 'rpc-v2.canarytest.axiacoin.network'
-// const port: number = 9650
-// const protocol: string = 'http'
-// const hrp: string = "custom"
-// const network_id: number = 0
+const hrp: string = "custom"
+const network_id: number = 0
 const chain_id: string = 'X'
-const avalanche: Avalanche = new Avalanche(ip, port, protocol, network_id, chain_id)
-const xChain = avalanche.XChain() // X
-const pChain = avalanche.PChain() // P
-const cChain = avalanche.CChain() // C
+const axia: Axia = new Axia(ip, port, protocol, network_id)
+const swapChain = axia.SwapChain() // X
+const coreChain = axia.CoreChain() // P
+const axChain = axia.AXChain() // C
 
 export {
-  avalanche,
-  xChain,
-  pChain,
-  cChain,
+  axia ,
+  swapChain ,
+  coreChain ,
+  axChain ,
 }
 
 // export const NetworkIDToHRP = {
