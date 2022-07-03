@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:axwallet_sdk/models/network_config.dart';
 import 'package:axwallet_sdk/src/service/index.dart';
 
 class ServiceBasic {
@@ -5,11 +8,12 @@ class ServiceBasic {
 
   final Service serviceRoot;
 
-  Future init({String? mnemonic}) async {
+  Future init({String? mnemonic, required NetworkConfig network}) async {
     final res = mnemonic != null
         ? await serviceRoot.webView
-            .evalJavascript('basic.init("$mnemonic", false)')
-        : await serviceRoot.webView.evalJavascript('basic.init(null, false)');
+            .evalJavascript('basic.init("$mnemonic", ${network.toJson()})')
+        : await serviceRoot.webView
+            .evalJavascript('basic.init(null, ${network.toJson()})');
     return res;
   }
 
@@ -23,9 +27,9 @@ class ServiceBasic {
     return res;
   }
 
-  Future changeNetwork({bool isTestNet = true}) async {
+  Future<bool> changeNetwork(NetworkConfig network) async {
     final res = await serviceRoot.webView
-        .evalJavascript('basic.changeNetwork($isTestNet)');
+        .evalJavascript('basic.changeNetwork(${network.toJson()})');
     return res;
   }
 }

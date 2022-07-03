@@ -1,7 +1,8 @@
 import { myWallet, syncWallet } from "./basic"
 import { axChain, coreChain, swapChain } from "../constants/networkSpect";
 // import { MnemonicWallet, BN, bnToAvaxX, bnToAvaxP, GasHelper, bnToAvaxC, bnToLocaleString, TxHelper } from "@avalabs/avalanche-wallet-sdk"
-import { MnemonicWallet, BN, Utils, GasHelper, TxHelper } from "@axia-systems/wallet-sdk"
+import { MnemonicWallet, BN, Utils, GasHelper, TxHelper, ExportChainsSwap, ExportChainsCore, ExportChainsAX } from "@axia-systems/wallet-sdk"
+import { waitExportStatus } from "../utils/helpers";
 
 async function getFee(chain: string, isExport: boolean) {
     if (chain === 'Swap') {
@@ -64,22 +65,22 @@ async function crossChain(from: string, to: string, amount: string) {
     let hasExported = false
     switch (from) {
         case "Swap":
-            exportID = await wallet.exportSwapChain(new BN(amount), to == "Core" ? "Core" : "AX")
-            hasExported = await _waitExportStatus("Swap", exportID)
+            exportID = await wallet.exportSwapChain(new BN(amount), to as ExportChainsSwap)
+            hasExported = await waitExportStatus("Swap", exportID)
             if (!hasExported) break;
             importID = to == "Core" ? await wallet.importCore("Swap") : await wallet.importAX("Swap")
             break;
 
         case "Core":
-            exportID = await wallet.exportCoreChain(new BN(amount), to == "Swap" ? "Swap" : "AX")
-            hasExported = await _waitExportStatus("Core", exportID)
+            exportID = await wallet.exportCoreChain(new BN(amount), to as ExportChainsCore)
+            hasExported = await waitExportStatus("Core", exportID)
             if (!hasExported) break;
             importID = to == "Swap" ? await wallet.importSwap("Core") : await wallet.importAX("Core")
             break;
 
         case "AX":
-            exportID = await wallet.exportAXChain(new BN(amount), to == "Core" ? "Core" : "Swap")
-            hasExported = await _waitExportStatus("AX", exportID)
+            exportID = await wallet.exportAXChain(new BN(amount), to as ExportChainsAX)
+            hasExported = await waitExportStatus("AX", exportID)
             if (!hasExported) break;
             importID = to == "Core" ? await wallet.importCore("AX") : await wallet.importSwap("AX")
             break;
@@ -93,52 +94,6 @@ async function crossChain(from: string, to: string, amount: string) {
     }
     console.log(data)
     return data
-}
-
-async function _waitExportStatus(chain: string, txID: string, remainingTries = 15): Promise<boolean> {
-    let status
-    switch (chain) {
-        case "Swap":
-            status = await swapChain.getTxStatus(txID)
-            break;
-        case "Core":
-            let resp = await coreChain.getTxStatus(txID)
-            if (typeof resp === 'string') {
-                status = resp
-            } else {
-                status = resp.status
-            }
-            break;
-        case "AX":
-            status = await axChain.getAtomicTxStatus(txID)
-            break;
-
-        default:
-            break;
-    }
-    const asd = JSON.stringify(status)
-    console.log(asd)
-    console.log(status)
-    if (status === 'Unknown' || status === 'Processing') {
-        // If out of tries
-        if (remainingTries <= 0) {
-            // Timed out
-            return false
-        }
-        // if not confirmed ask again
-        setTimeout(() => {
-            console.log("Retrying (" + remainingTries + ")")
-            this._exportStatus(chain, txID, remainingTries - 1)
-        }, 1000)
-        return false
-    } else if (status === 'Dropped') {
-        // If dropped stop the process
-        return false
-    } else {
-        // If success start import
-        return true
-    }
-
 }
 
 export default {

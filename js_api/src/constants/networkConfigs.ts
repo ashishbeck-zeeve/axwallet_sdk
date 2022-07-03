@@ -1,7 +1,7 @@
 // import {NetworkConfig, getRpcP, getRpcC, getRpcX, } from "@avalabs/avalanche-wallet-sdk"
 import { Network } from "@axia-systems/wallet-sdk"
 // import { utils } from "avalanche";
-import { utils as axUtils } from "@axia-systems/axiajs";
+import { utils } from "@axia-systems/axiajs";
 
 export const testNetConfig: Network.NetworkConfig = {
     rawUrl: 'https://api.avax-test.network',
@@ -11,11 +11,11 @@ export const testNetConfig: Network.NetworkConfig = {
     explorerURL: 'https://explorerapi.avax-test.network',
     explorerSiteURL: 'https://explorer.avax-test.network',
     networkID: 5,
-    swapChainID: axUtils.Defaults.network[5]['Swap']['blockchainID'],
-    coreChainID: axUtils.Defaults.network[5]['Core']['blockchainID'],
-    axChainID: axUtils.Defaults.network[5]['AX']['blockchainID'],
-    evmChainID: axUtils.Defaults.network[5]['AX']['chainID'],
-    axcID: axUtils.Defaults.network[5]['Swap']['axcAssetID'],
+    swapChainID: utils.Defaults.network[5]['Swap']['blockchainID'],
+    coreChainID: utils.Defaults.network[5]['Core']['blockchainID'],
+    axChainID: utils.Defaults.network[5]['AX']['blockchainID'],
+    evmChainID: utils.Defaults.network[5]['AX']['chainID'],
+    axcID: utils.Defaults.network[5]['Swap']['axcAssetID'],
     get rpcUrl() {
         return {
             ax: Network.getRpcAX(this),
@@ -33,11 +33,11 @@ export const axTestNetConfig: Network.NetworkConfig = {
     explorerURL: 'https://magellan-v2.testnet.axiacoin.network',
     explorerSiteURL: 'https://axscan-v2.testnet.axiacoin.network',
     networkID: 5678,
-    swapChainID: axUtils.Defaults.network[5678]['Swap']['blockchainID'],
-    coreChainID: axUtils.Defaults.network[5678]['Core']['blockchainID'],
-    axChainID: axUtils.Defaults.network[5678]['AX']['blockchainID'],
-    evmChainID: axUtils.Defaults.network[5678]['AX']['chainID'],
-    axcID: axUtils.Defaults.network[5678]['Swap']['axcAssetID'],
+    swapChainID: utils.Defaults.network[5678]['Swap']['blockchainID'],
+    coreChainID: utils.Defaults.network[5678]['Core']['blockchainID'],
+    axChainID: utils.Defaults.network[5678]['AX']['blockchainID'],
+    evmChainID: utils.Defaults.network[5678]['AX']['chainID'],
+    axcID: utils.Defaults.network[5678]['Swap']['axcAssetID'],
     get rpcUrl() {
         return {
             ax: Network.getRpcAX(this),

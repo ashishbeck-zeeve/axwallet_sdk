@@ -1,8 +1,9 @@
 import { axChain } from "../constants/networkSpect";
 // import { BinTools, Mnemonic, HDNode, BN } from "avalanche"
 // import { bnToAvaxC, bnToAvaxP, bnToAvaxX, MnemonicWallet, setNetworkAsync, MainnetConfig, GasHelper } from "@avalabs/avalanche-wallet-sdk"
-import {  Utils, MnemonicWallet, Network, GasHelper } from "@axia-systems/wallet-sdk"
-import { testNetConfig, axTestNetConfig } from "../constants/networkConfigs";
+import { Utils, MnemonicWallet, Network, GasHelper, NetworkConstants } from "@axia-systems/wallet-sdk"
+import { getNetworkConfig } from "../utils/helpers";
+import { NetworkConfig } from "@axia-systems/wallet-sdk/dist/Network";
 
 export let myWallet: MnemonicWallet;
 
@@ -22,12 +23,17 @@ export async function syncWallet(wallet: MnemonicWallet) {
   // ])
 }
 
-async function changeNetwork(isTestNet: boolean) {
+// config = {"url": "https://1.p2p-v2.testnet.axiacoin.network:443", "networkID": 5678, "explorerURL": "https://magellan-v2.testnet.axiacoin.network", "explorerSiteURL": "https://axscan-v2.testnet.axiacoin.network"}
+async function changeNetwork(config: Object) {
+  const network: Network.NetworkConfig = getNetworkConfig(config)
   try {
-    await Network.setNetworkAsync(isTestNet ? testNetConfig : axTestNetConfig)
-    console.log("Successfully changed to " + (isTestNet ? "Test" : "Main") + "Net")
+    await Network.setNetworkAsync(network)
+    console.log("Successfully changed to " + network.rawUrl)
+    // return network.apiProtocol + "://" + network.apiIp + ":" + network.apiPort
+    return true
   } catch (e) {
     console.log("Failed to change network")
+    return false
   }
 }
 
@@ -88,21 +94,21 @@ async function getBalance() {
   }
 }
 
-async function init(mnemonic?: string, network?: boolean) {
+async function init(mnemonic?: string, network?: NetworkConfig) {
   // set test net by default
-  await changeNetwork(network ?? true)
+  const connected = await changeNetwork(network)
 
   if (mnemonic != null) {
     // generate default wallet with mnemonic
     console.log("Generating wallet. Please wait...")
     myWallet = await generateMnemonicWallet(mnemonic)
   }
-
+  return connected
 }
 
 async function test() {
   const gasPrice = parseInt(await axChain.getBaseFee(), 16)
-  const adjusted =  await GasHelper.getAdjustedGasPrice()
+  const adjusted = await GasHelper.getAdjustedGasPrice()
   console.log(gasPrice)
   console.log(Utils.bnToAxcCore(adjusted))
 }
