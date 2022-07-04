@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:axwallet_sdk/models/network_config.dart';
+import 'package:axwallet_sdk/models/index.dart';
 import 'package:axwallet_sdk/src/service/index.dart';
 
 class ServiceBasic {

@@ -9,6 +9,7 @@ import 'package:axwallet_sdk/src/webViewRunner.dart';
 // export 'package:axwallet_sdk/src/api/index.dart';
 // export 'package:axwallet_sdk/src/service/index.dart';
 // export 'package:axwallet_sdk/src/webViewRunner.dart';
+export 'package:axwallet_sdk/models/index.dart';
 
 class AXwalletSDK {
   Api? api;
