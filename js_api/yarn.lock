@@ -10,10 +10,10 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@axia-systems/axiajs@2.0.6":
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/@axia-systems/axiajs/-/axiajs-2.0.6.tgz#2eefc8cbed47dd5a35039ebb5e7160e5484a760b"
-  integrity sha512-rY3rKsSCUMwBIO+1nD6GY7B8/ilnD4m7qvEGHD8C7kYmBg8i1du6q1gW8iE1Y5xTGl2mlM+qqqDPadOTN3rlDQ==
+"@axia-systems/axiajs@3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@axia-systems/axiajs/-/axiajs-3.0.4.tgz#e5e9b5677dcbc5fcf0c0af6bb80585a7c5919316"
+  integrity sha512-fOjcC86k3ddLZewh5vX3FU40Wre0lL30PxVxqLdgnC5iX73dgdtUQWN9UoZLHanfFbIa2GABUJpzO4SRoEUe4Q==
   dependencies:
     assert "2.0.0"
     axios "0.27.2"
@@ -42,10 +42,10 @@
     create-hash "1.2.0"
     jest "^26.4.1"
 
-"@axia-systems/wallet-sdk@2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@axia-systems/wallet-sdk/-/wallet-sdk-2.0.5.tgz#444245aaeb238dae81f8a6fb82161b820057d017"
-  integrity sha512-sh/CDbUAC2+5UoCUNAlWRGpSciIDWiDHIA4B2vrqDzoXE3DfFMtKM/lDD2vZvseu52RNoai5xtUp6XoIHJgYCA==
+"@axia-systems/wallet-sdk@3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@axia-systems/wallet-sdk/-/wallet-sdk-3.0.2.tgz#303652ea834e77839032f30ded8fabee4d427c68"
+  integrity sha512-5pMaisvTjG3Dg7CnIyrl7I4Di6nwpZg9AEw0LMRRvG1XRbH1GL9w2bRZv0k8FZRnL91EV9EicpDH2OtN5ScMZA==
   dependencies:
     "@axia-systems/hd-wallet" "^1.0.0"
     "@ethereumjs/common" "2.6.0"

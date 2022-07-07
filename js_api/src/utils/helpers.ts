@@ -5,8 +5,7 @@ import { axMainNetConfig, axTestNetConfig } from "../constants/networkConfigs"
 import { axChain, coreChain, swapChain } from "../constants/networkSpect"
 
 export function getNetworkConfig(config?: Object) {
-    // https://1.p2p-v2.testnet.axiacoin.network:433
-    if (config == null) return axMainNetConfig
+    if (config == null) return axTestNetConfig
     const url: string = config['url']
     const splitURL: Array<string> = url.split(":")
     const protocol: NetworkProtocolType = url.split("://")[0] as NetworkProtocolType
