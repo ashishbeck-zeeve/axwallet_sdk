@@ -1,9 +1,10 @@
-import { axChain } from "../constants/networkSpect";
+import { axChain, coreChain, swapChain } from "../constants/networkSpect";
 // import { BinTools, Mnemonic, HDNode, BN } from "avalanche"
 // import { bnToAvaxC, bnToAvaxP, bnToAvaxX, MnemonicWallet, setNetworkAsync, MainnetConfig, GasHelper } from "@avalabs/avalanche-wallet-sdk"
 import { Utils, MnemonicWallet, Network, GasHelper, NetworkConstants } from "@axia-systems/wallet-sdk"
 import { getNetworkConfig } from "../utils/helpers";
 import { NetworkConfig } from "@axia-systems/wallet-sdk/dist/Network";
+import { getAddressHistory } from "../utils/txn_api";
 
 export let myWallet: MnemonicWallet;
 
@@ -107,10 +108,10 @@ async function init(mnemonic?: string, network?: NetworkConfig) {
 }
 
 async function test() {
-  const gasPrice = parseInt(await axChain.getBaseFee(), 16)
-  const adjusted = await GasHelper.getAdjustedGasPrice()
-  console.log(gasPrice)
-  console.log(Utils.bnToAxcCore(adjusted))
+  const allSwap = myWallet.getAllAddressesSwapSync();
+  const history = await getAddressHistory(allSwap, 20, swapChain.getBlockchainID())
+  console.log(history.length)
+  history.forEach((e) => console.log(e))
 }
 
 // async function createKeychain() {

@@ -12,13 +12,13 @@ class ApiNomination {
     return res;
   }
 
-  Future delegateNode({
+  Future nominateNode({
     required String nodeID,
     required String amount,
     required int end,
     String? rewardAddress,
   }) async {
-    final res = await service.delegateNode(
+    final res = await service.nominateNode(
       nodeID: nodeID,
       amount: amount,
       end: end,

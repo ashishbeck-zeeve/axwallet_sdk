@@ -9,14 +9,14 @@ async function getValidators() {
   return validators
 }
 
-async function delegateNode(nodeID: string, amount: string, start: number, end: number, rewardAddress?: string) {
+async function nominateNode(nodeID: string, amount: string, start: number, end: number, rewardAddress?: string) {
   const wallet = myWallet // await generateMnemonicWallet(mnemonic)
   await syncWallet(wallet)
-  const txid = await wallet.delegate(nodeID, new BN(amount), new Date(start), new Date(end), rewardAddress)
+  const txid = await wallet.nominate(nodeID, new BN(amount), new Date(start), new Date(end), rewardAddress)
   return { "txID": txid }
 }
 
 export default {
   getValidators,
-  delegateNode
+  nominateNode
 };

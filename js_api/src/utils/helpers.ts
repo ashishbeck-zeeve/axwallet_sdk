@@ -1,12 +1,12 @@
 import { utils } from "@axia-systems/axiajs"
 import { Network } from "@axia-systems/wallet-sdk"
 import { NetworkProtocolType } from "@axia-systems/wallet-sdk/dist/Network/types"
-import { axTestNetConfig } from "../constants/networkConfigs"
+import { axMainNetConfig, axTestNetConfig } from "../constants/networkConfigs"
 import { axChain, coreChain, swapChain } from "../constants/networkSpect"
 
 export function getNetworkConfig(config?: Object) {
     // https://1.p2p-v2.testnet.axiacoin.network:433
-    if (config == null) return axTestNetConfig
+    if (config == null) return axMainNetConfig
     const url: string = config['url']
     const splitURL: Array<string> = url.split(":")
     const protocol: NetworkProtocolType = url.split("://")[0] as NetworkProtocolType

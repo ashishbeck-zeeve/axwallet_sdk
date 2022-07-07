@@ -1,6 +1,6 @@
 {
   "name": "@axiawallet_sdk/js-api",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "index.js",
   "license": "Apache-2.0",
   "keywords": [
@@ -29,8 +29,9 @@
     "build-dev": "webpack --mode development"
   },
   "dependencies": {
-    "@axia-systems/axiajs": "2.0.4",
-    "@axia-systems/wallet-sdk": "2.0.2",
+    "@axia-systems/axiajs": "2.0.6",
+    "@axia-systems/wallet-sdk": "2.0.5",
+    "axios": "0.21.2",
     "bn.js": "^5.1.2",
     "https-browserify": "^1.0.0",
     "node-polyfill-webpack-plugin": "^2.0.0",

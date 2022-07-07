@@ -11,7 +11,7 @@ class ServiceNomination {
     return res;
   }
 
-  Future delegateNode({
+  Future nominateNode({
     required String nodeID,
     required String amount,
     required int end,
@@ -20,8 +20,8 @@ class ServiceNomination {
     int bufferTime = 300000; // 5 minutes
     int start = DateTime.now().millisecondsSinceEpoch + bufferTime;
     final res = await serviceRoot.webView.evalJavascript(rewardAddress == null
-        ? 'nomination.delegateNode("$nodeID", "$amount", $start, $end)'
-        : 'nomination.delegateNode("$nodeID", "$amount", $start, $end, "$rewardAddress")');
+        ? 'nomination.nominateNode("$nodeID", "$amount", $start, $end)'
+        : 'nomination.nominateNode("$nodeID", "$amount", $start, $end, "$rewardAddress")');
     return res;
   }
 }
