@@ -1,6 +1,6 @@
 {
   "name": "@axiawallet_sdk/js-api",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "main": "index.js",
   "license": "Apache-2.0",
   "keywords": [
@@ -18,10 +18,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ashishbeck-zeeve/axwallet_sdk.git"
+    "url": "git+https://github.com/AxiaCoin/axia-network-v2-axwallet-sdk.git"
   },
   "bugs": {
-    "url": "https://github.com/ashishbeck-zeeve/axwallet_sdk/issues"
+    "url": "https://github.com/AxiaCoin/axia-network-v2-axwallet-sdk/issues"
   },
   "scripts": {
     "clean": "rm -rf dist/*",
@@ -29,10 +29,11 @@
     "build-dev": "webpack --mode development"
   },
   "dependencies": {
-    "@axia-systems/axiajs": "3.0.4",
-    "@axia-systems/wallet-sdk": "3.0.2",
+    "@axia-systems/axiajs": "3.0.8",
+    "@axia-systems/wallet-sdk": "3.0.4",
     "axios": "0.21.2",
     "bn.js": "^5.1.2",
+    "ethereum-blockies-base64": "^1.0.2",
     "https-browserify": "^1.0.0",
     "node-polyfill-webpack-plugin": "^2.0.0",
     "oo7-substrate": "^0.8.0",

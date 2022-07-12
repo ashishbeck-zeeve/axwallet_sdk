@@ -32,4 +32,9 @@ class ServiceBasic {
         .evalJavascript('basic.changeNetwork(${network.toJson()})');
     return res;
   }
+
+  Future tests() async {
+    final res = await serviceRoot.webView.evalJavascript('basic.test()');
+    return res;
+  }
 }

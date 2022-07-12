@@ -1,6 +1,6 @@
 name: axwallet_sdk
 description: A new Flutter project.
-version: 0.2.3
+version: 0.3.0
 homepage:
 
 environment:
@@ -13,8 +13,6 @@ dependencies:
   http: any
   webview_flutter: any
   flutter_inappwebview: any
-  jaguar: any
-  jaguar_flutter_asset: any
 
 dev_dependencies:
   flutter_test:

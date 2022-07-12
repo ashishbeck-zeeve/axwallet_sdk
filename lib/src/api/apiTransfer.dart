@@ -1,5 +1,6 @@
 import 'package:axwallet_sdk/src/api/index.dart';
 import 'package:axwallet_sdk/src/service/transfer.dart';
+import 'package:axwallet_sdk/models/index.dart';
 
 class ApiTransfer {
   ApiTransfer(this.apiRoot, this.service);
@@ -49,6 +50,11 @@ class ApiTransfer {
       to: to,
       amount: amount,
     );
+    return res;
+  }
+
+  Future<List<AXCTransaction>> getTransactions() async {
+    final res = await service.getTransactions();
     return res;
   }
 }
