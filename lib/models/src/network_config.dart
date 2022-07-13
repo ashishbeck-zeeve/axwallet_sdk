@@ -6,6 +6,7 @@ class NetworkConfig {
   int networkID;
   String? explorerURL;
   String? explorerSiteURL;
+  String explorerTxnURL;
   bool isTestNet;
   NetworkConfig({
     required this.name,
@@ -13,6 +14,7 @@ class NetworkConfig {
     required this.networkID,
     this.explorerURL,
     this.explorerSiteURL,
+    required this.explorerTxnURL,
     required this.isTestNet,
   });
 
@@ -23,6 +25,7 @@ class NetworkConfig {
       'networkID': networkID,
       'explorerURL': explorerURL,
       'explorerSiteURL': explorerSiteURL,
+      'explorerTxnURL': explorerTxnURL,
       'isTestNet': isTestNet,
     };
   }
@@ -34,7 +37,8 @@ class NetworkConfig {
       networkID: map['networkID']?.toInt() ?? 0,
       explorerURL: map['explorerURL'],
       explorerSiteURL: map['explorerSiteURL'],
-      isTestNet: map['isTestNet'] ?? true,
+      explorerTxnURL: map['explorerTxnURL'] ?? '',
+      isTestNet: map['isTestNet'] ?? false,
     );
   }
 
@@ -53,6 +57,7 @@ class NetworkConfig {
         other.networkID == networkID &&
         other.explorerURL == explorerURL &&
         other.explorerSiteURL == explorerSiteURL &&
+        other.explorerTxnURL == explorerTxnURL &&
         other.isTestNet == isTestNet;
   }
 
@@ -63,6 +68,7 @@ class NetworkConfig {
         networkID.hashCode ^
         explorerURL.hashCode ^
         explorerSiteURL.hashCode ^
+        explorerTxnURL.hashCode ^
         isTestNet.hashCode;
   }
 }
