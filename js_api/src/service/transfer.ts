@@ -1,6 +1,5 @@
 import { myWallet, syncWallet } from "./basic"
 import { axia, bintools } from "../constants/networkSpect";
-// import { MnemonicWallet, BN, bnToAvaxX, bnToAvaxP, GasHelper, bnToAvaxC, bnToLocaleString, TxHelper } from "@avalabs/avalanche-wallet-sdk"
 import { MnemonicWallet, BN, Utils, GasHelper, TxHelper, ExportChainsSwap, ExportChainsCore, ExportChainsAX, Big, History } from "@axia-systems/wallet-sdk"
 import { waitExportStatus } from "../utils/helpers";
 import { ImportExport } from "../utils/txn_types/import_export";

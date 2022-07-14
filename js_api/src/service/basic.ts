@@ -1,6 +1,4 @@
 import { axia, changeAxiaProvider } from "../constants/networkSpect";
-// import { BinTools, Mnemonic, HDNode, BN } from "avalanche"
-// import { bnToAvaxC, bnToAvaxP, bnToAvaxX, MnemonicWallet, setNetworkAsync, MainnetConfig, GasHelper } from "@avalabs/avalanche-wallet-sdk"
 import { Utils, MnemonicWallet, Network, History, GasHelper, NetworkConstants, BN } from "@axia-systems/wallet-sdk"
 import { getNetworkConfig } from "../utils/helpers";
 import { NetworkConfig } from "@axia-systems/wallet-sdk/dist/Network";
