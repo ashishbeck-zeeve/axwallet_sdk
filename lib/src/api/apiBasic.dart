@@ -27,4 +27,9 @@ class ApiBasic {
     final res = await service.changeNetwork(network);
     return res;
   }
+
+  Future<bool> tests() async {
+    final res = await service.tests();
+    return res;
+  }
 }

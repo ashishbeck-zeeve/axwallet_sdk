@@ -5,8 +5,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:jaguar/jaguar.dart';
-import 'package:jaguar_flutter_asset/jaguar_flutter_asset.dart';
 
 class WebViewRunner {
   HeadlessInAppWebView? _web;
@@ -49,6 +47,9 @@ class WebViewRunner {
         },
         onConsoleMessage: (controller, message) {
           print("CONSOLE MESSAGE: " + message.message);
+          if (message.messageLevel == ConsoleMessageLevel.ERROR) {
+            print("well this is not right");
+          }
           if (message.messageLevel != ConsoleMessageLevel.LOG) return;
 
           compute(jsonDecode, message.message).then((msg) {

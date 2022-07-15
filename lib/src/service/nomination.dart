@@ -17,8 +17,9 @@ class ServiceNomination {
     required int end,
     String? rewardAddress,
   }) async {
-    int bufferTime = 300000; // 5 minutes
-    int start = DateTime.now().millisecondsSinceEpoch + bufferTime;
+    DateTime endDate = DateTime.fromMillisecondsSinceEpoch(end);
+    Duration period = const Duration(days: 120);
+    int start = endDate.subtract(period).millisecondsSinceEpoch;
     final res = await serviceRoot.webView.evalJavascript(rewardAddress == null
         ? 'nomination.nominateNode("$nodeID", "$amount", $start, $end)'
         : 'nomination.nominateNode("$nodeID", "$amount", $start, $end, "$rewardAddress")');

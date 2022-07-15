@@ -2,11 +2,10 @@ import { utils } from "@axia-systems/axiajs"
 import { Network } from "@axia-systems/wallet-sdk"
 import { NetworkProtocolType } from "@axia-systems/wallet-sdk/dist/Network/types"
 import { axMainNetConfig, axTestNetConfig } from "../constants/networkConfigs"
-import { axChain, coreChain, swapChain } from "../constants/networkSpect"
+import { axia } from "../constants/networkSpect"
 
 export function getNetworkConfig(config?: Object) {
-    // https://1.p2p-v2.testnet.axiacoin.network:433
-    if (config == null) return axMainNetConfig
+    if (config == null) return axTestNetConfig
     const url: string = config['url']
     const splitURL: Array<string> = url.split(":")
     const protocol: NetworkProtocolType = url.split("://")[0] as NetworkProtocolType
@@ -42,10 +41,10 @@ export async function waitExportStatus(chain: string, txID: string, remainingTri
     let status
     switch (chain) {
         case "Swap":
-            status = await swapChain.getTxStatus(txID)
+            status = await axia.SwapChain().getTxStatus(txID)
             break;
         case "Core":
-            let resp = await coreChain.getTxStatus(txID)
+            let resp = await axia.CoreChain().getTxStatus(txID)
             if (typeof resp === 'string') {
                 status = resp
             } else {
@@ -53,7 +52,7 @@ export async function waitExportStatus(chain: string, txID: string, remainingTri
             }
             break;
         case "AX":
-            status = await axChain.getAtomicTxStatus(txID)
+            status = await axia.AXChain().getAtomicTxStatus(txID)
             break;
 
         default:
