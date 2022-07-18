@@ -12,6 +12,23 @@ class ApiNomination {
     return res;
   }
 
+  Future addValidator({
+    required String nodeID,
+    required String amount,
+    required int end,
+    required int fee,
+    String? rewardAddress,
+  }) async {
+    final res = await service.addValidator(
+      nodeID: nodeID,
+      amount: amount,
+      end: end,
+      fee: fee,
+      rewardAddress: rewardAddress,
+    );
+    return res;
+  }
+
   Future nominateNode({
     required String nodeID,
     required String amount,

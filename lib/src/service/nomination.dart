@@ -11,6 +11,22 @@ class ServiceNomination {
     return res;
   }
 
+  Future addValidator({
+    required String nodeID,
+    required String amount,
+    required int end,
+    required int fee,
+    String? rewardAddress,
+  }) async {
+    DateTime endDate = DateTime.fromMillisecondsSinceEpoch(end);
+    Duration period = const Duration(days: 120);
+    int start = endDate.subtract(period).millisecondsSinceEpoch;
+    final res = await serviceRoot.webView.evalJavascript(rewardAddress == null
+        ? 'nomination.addValidator("$nodeID", "$amount", $start, $end, $fee)'
+        : 'nomination.addValidator("$nodeID", "$amount", $start, $end, $fee, "$rewardAddress")');
+    return res;
+  }
+
   Future nominateNode({
     required String nodeID,
     required String amount,

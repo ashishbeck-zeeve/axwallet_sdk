@@ -1,5 +1,5 @@
 import { axia, changeAxiaProvider } from "../constants/networkSpect";
-import { Utils, MnemonicWallet, Network, History, GasHelper, NetworkConstants, BN } from "@axia-systems/wallet-sdk"
+import { Utils, MnemonicWallet, Network, History } from "@axia-systems/wallet-sdk"
 import { getNetworkConfig } from "../utils/helpers";
 import { NetworkConfig } from "@axia-systems/wallet-sdk/dist/Network";
 
