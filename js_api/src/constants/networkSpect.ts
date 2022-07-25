@@ -7,7 +7,9 @@ const protocol: string = 'https'
 const hrp: string = "custom"
 const network_id: number = 0
 const chain_id: string = 'X'
-const bintools = BinTools.getInstance()
+export const MIN_STAKING_DAYS = 120
+export const MIN_STAKING_AMOUNT = 20
+export const bintools = BinTools.getInstance()
 const config = axTestNetConfig
 let axia: Axia = new Axia(config.apiIp, config.apiPort, config.apiProtocol, config.networkID)
 // const swapChain = axia.SwapChain()
@@ -22,7 +24,6 @@ function changeAxiaProvider(config: NetworkConfig) {
 
 export {
   axia,
-  bintools,
   changeAxiaProvider,
   // swapChain ,
   // coreChain ,

@@ -16,7 +16,7 @@ class ApiNomination {
     required String nodeID,
     required String amount,
     required int end,
-    required int fee,
+    required double fee,
     String? rewardAddress,
   }) async {
     final res = await service.addValidator(

@@ -1,12 +1,14 @@
 import { axia } from "../constants/networkSpect";
 import { myWallet, syncWallet } from "./basic"
 import { Utils } from "@axia-systems/wallet-sdk"
+import { filterValidators } from "../utils/helpers";
 
 async function getValidators() {
   var validators = await axia.CoreChain().getCurrentValidators()
-  const data = JSON.stringify(validators)
+  var filtered = filterValidators(validators)
+  const data = JSON.stringify(filtered)
   console.log(data)
-  return validators
+  return filtered
 }
 
 async function addValidator(nodeID: string, amount: string, start: number, end: number, fee: number, rewardAddress?: string) {

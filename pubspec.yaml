@@ -1,6 +1,6 @@
 name: axwallet_sdk
 description: A new Flutter project.
-version: 2.0.2
+version: 2.0.3
 homepage:
 
 environment:
@@ -27,8 +27,6 @@ flutter:
 
   # To add assets to your package, add an assets section, like this:
   assets:
-    - lib/ssl/certificate.txt
-    - lib/ssl/keys.txt
     - assets/index.html
     - js_api/dist/main.js
   #
