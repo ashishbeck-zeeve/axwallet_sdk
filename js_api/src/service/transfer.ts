@@ -1,144 +1,196 @@
 import { myWallet, syncWallet } from "./basic"
-import { cChain, pChain, xChain } from "../constants/networkSpect";
-import { MnemonicWallet, BN, bnToAvaxX, bnToAvaxP, GasHelper, bnToAvaxC, bnToLocaleString, TxHelper } from "@avalabs/avalanche-wallet-sdk"
+import { axia } from "../constants/networkSpect";
+import { MnemonicWallet, BN, Utils, GasHelper, TxHelper, ExportChainsSwap, ExportChainsCore, ExportChainsAX, History } from "@axia-systems/wallet-sdk"
+import { waitExportStatus } from "../utils/helpers";
+import { ImportExport } from "../utils/txn_types/import_export";
 
 async function getFee(chain: string, isExport: boolean) {
-    if (chain === 'X') {
-        console.log(bnToAvaxX(xChain.getTxFee()))
-        return bnToAvaxX(xChain.getTxFee())
-    } else if (chain === 'P') {
-        console.log(bnToAvaxP(pChain.getTxFee()))
-        return bnToAvaxX(pChain.getTxFee())
+    if (chain === 'Swap') {
+        // console.log(Utils.bnToAxcSwap(axia.SwapChain().getTxFee()))
+        return Utils.bnToAxcSwap(axia.SwapChain().getTxFee())
+    } else if (chain === 'Core') {
+        // console.log(Utils.bnToAxcCore(axia.CoreChain().getTxFee()))
+        return Utils.bnToAxcSwap(axia.CoreChain().getTxFee())
     } else {
         const fee = isExport
             ? GasHelper.estimateExportGasFeeFromMockTx(
-                "X",
+                "Swap",
                 new BN(1000000),
-                myWallet.getAddressC(),
-                myWallet.getAddressX()
+                myWallet.getAddressAX(),
+                myWallet.getAddressSwap()
             )
             : GasHelper.estimateImportGasFeeFromMockTx(1, 1)
         const baseFee = await GasHelper.getBaseFeeRecommended()
         const totFeeWei = baseFee.mul(new BN(fee))
-        return bnToAvaxC(totFeeWei)
+        return Utils.bnToAxcAX(totFeeWei)
     }
 }
 
 async function getAdjustedGasPrice() {
     const gasPrice = await GasHelper.getAdjustedGasPrice()
-    return bnToAvaxC(gasPrice)
+    return Utils.bnToAxcAX(gasPrice)
 }
 
-async function getEstimatedGasLimit(to: string, amount: string) {
-    const gasPrice = await GasHelper.getAdjustedGasPrice()
-    const gasLimit = await TxHelper.estimateAvaxGas(
-        myWallet.getAddressC(),
+async function getEstimatedGasLimit(to: string, amount: string, gas?: BN) {
+    const amtAX = Utils.numberToBNAxcAX(amount)
+    const gasPrice = gas ?? await GasHelper.getAdjustedGasPrice()
+    const gasLimit = await TxHelper.estimateAxcGas(
+        myWallet.getAddressAX(),
         to,
-        new BN(amount),
+        amtAX,
         gasPrice
     )
     return gasLimit
 }
 
 async function sameChain(to: string, amount: string, chain: string, memo?: string) {
-    const wallet: MnemonicWallet = myWallet
-    await syncWallet(wallet)
-    //const gasPrice = parseInt(await cChain.getBaseFee(), 16)
-    const gasPrice = await GasHelper.getAdjustedGasPrice()
-    const gasLimit = await getEstimatedGasLimit(to, amount)
-    const txID = chain == "X" ? await wallet.sendAvaxX(to, new BN(amount), memo) : await wallet.sendAvaxC(to, new BN(amount), gasPrice, gasLimit)
-    console.log(txID)
-    const data = {
-        "txID": txID,
+    try {
+        const wallet: MnemonicWallet = myWallet
+        await syncWallet(wallet)
+        //const gasPrice = parseInt(await cChain.getBaseFee(), 16)
+        const gasPrice = chain == "AX" ? await GasHelper.getAdjustedGasPrice() : new BN(0)
+        const gasLimit = chain == "AX" ? await getEstimatedGasLimit(to, amount, gasPrice) : 0
+        const amtSwap = Utils.numberToBNAxcSwap(amount)
+        const amtAX = Utils.numberToBNAxcAX(amount)
+        const txID = chain == "Swap" ? await wallet.sendAxcSwap(to, amtSwap, memo) : await wallet.sendAxcAX(to, amtAX, gasPrice, gasLimit)
+        console.log(txID)
+        const data = {
+            "txID": txID,
+        }
+        console.log(data)
+        return data
+    } catch (err) {
+        (<any>window).send("log", { error: err.message });
+        return err.message;
     }
-    console.log(data)
-    return data
 }
 
 // add import fee to amount from UI
 async function crossChain(from: string, to: string, amount: string) {
-    const wallet: MnemonicWallet = myWallet
-    await syncWallet(wallet)
-    let exportID: string
-    let importID: string
-    let hasExported = false
-    switch (from) {
-        case "X":
-            exportID = await wallet.exportXChain(new BN(amount), to == "P" ? "P" : "C")
-            hasExported = await _waitExportStatus("X", exportID)
-            if (!hasExported) break;
-            importID = to == "P" ? await wallet.importP("X") : await wallet.importC("X")
-            break;
-
-        case "P":
-            exportID = await wallet.exportPChain(new BN(amount), to == "X" ? "X" : "C")
-            hasExported = await _waitExportStatus("P", exportID)
-            if (!hasExported) break;
-            importID = to == "X" ? await wallet.importX("P") : await wallet.importC("P")
-            break;
-
-        case "C":
-            exportID = await wallet.exportCChain(new BN(amount), to == "P" ? "P" : "X")
-            hasExported = await _waitExportStatus("C", exportID)
-            if (!hasExported) break;
-            importID = to == "P" ? await wallet.importP("C") : await wallet.importX("C")
-            break;
-
-        default:
-            break;
+    try {
+        const wallet: MnemonicWallet = myWallet
+        await syncWallet(wallet)
+        let exportID: string
+        let importID: string
+        let hasExported = false
+        // Import fees of the destination chain needed to be added manually
+        const importFees = await getFee(to, false)
+        const amtBN = Utils.numberToBNAxcSwap(amount).add(Utils.numberToBNAxcSwap(importFees))
+        switch (from) {
+            case "Swap":
+                exportID = await wallet.exportSwapChain(amtBN, to as ExportChainsSwap)
+                hasExported = await waitExportStatus("Swap", exportID)
+                if (!hasExported) break;
+                importID = to == "Core" ? await wallet.importCore("Swap") : await wallet.importAX("Swap")
+                break;
+    
+            case "Core":
+                exportID = await wallet.exportCoreChain(amtBN, to as ExportChainsCore)
+                hasExported = await waitExportStatus("Core", exportID)
+                if (!hasExported) break;
+                importID = to == "Swap" ? await wallet.importSwap("Core") : await wallet.importAX("Core")
+                break;
+    
+            case "AX":
+                exportID = await wallet.exportAXChain(amtBN, to as ExportChainsAX)
+                hasExported = await waitExportStatus("AX", exportID)
+                if (!hasExported) break;
+                importID = to == "Core" ? await wallet.importCore("AX") : await wallet.importSwap("AX")
+                break;
+    
+            default:
+                break;
+        }
+        const data = {
+            "exportID": exportID,
+            "importID": importID
+        }
+        console.log(data)
+        return data
+    } catch (err) {
+        (<any>window).send("log", { error: err.message });
+        return err.message;
     }
-    const data = {
-        "exportID": exportID,
-        "importID": importID
+}
+
+async function getTransactions() {
+    const allSwap = myWallet.getAllAddressesSwapSync();
+    const allCore = myWallet.getAllAddressesCoreSync();
+    const allAddr = allSwap.concat(allCore)
+    // console.log(allSwap)
+    // console.log(allCore)
+    // console.log(axia.SwapChain().getBlockchainID())
+    // console.log(axia.CoreChain().getBlockchainID())
+    const [swapTxn, coreTxn] = await Promise.all([
+        History.getAddressHistory(allSwap, 20, axia.SwapChain().getBlockchainID()),
+        History.getAddressHistory(allCore, 20, axia.CoreChain().getBlockchainID())
+    ])
+    // const swapTxn = await History.getAddressHistory(allSwap, 20, axia.SwapChain().getBlockchainID())
+    // const coreTxn = await History.getAddressHistory(allCore, 20, axia.CoreChain().getBlockchainID())
+
+    // const summary = await History.getTransactionSummary(swapTxn[0], allSwap, myWallet.getAddressAX())
+    // const strfied = JSON.parse(JSON.stringify(summary))
+    // console.log(strfied)
+    // console.log(Utils.bnToAxcSwap(summary.fee))
+    // console.log((strfied["fee"]))
+    // console.log((strfied["amountDisplayValue"]))
+    const txns = swapTxn.concat(coreTxn).sort((a, b) => {
+        return (Date.parse(a.timestamp) < Date.parse(b.timestamp)) ? 1 : -1;
+    })
+    console.log(txns)
+    let i = 1;
+    let data = []
+    // txns.forEach((e) => {
+
+    //   e.inputs.forEach((x) => console.log(x.output.amount))
+    //   i++
+    // })
+    for await (var item of txns) {
+        let map = {}
+        const summary = await History.getTransactionSummary(item, allAddr, myWallet.getAddressAX())
+        map["id"] = summary.id
+        map["type"] = summary.type
+        map["timestamp"] = summary.timestamp.valueOf()
+        map["memo"] = summary.memo
+        map["fee"] = Utils.bnToAxcSwap(summary.fee)
+        if (History.isHistoryImportExportTx(summary)) {
+            map["amount"] = summary.amountDisplayValue
+            map["amountL"] = Utils.bnToAxcSwap(summary.amount)
+            map["source"] = summary.source
+            map["destination"] = summary.destination
+            // This is needed because the API doesn't calculate the "amount" for AX related txns accurately
+            const IETxn = new ImportExport(item)
+            map["amount"] = IETxn.amtText
+            map["fee"] = Utils.bnToAxcSwap(IETxn.txFee)
+        }
+        if (History.isHistoryBaseTx(summary)) {
+            map["tokens"] = summary.tokens
+        }
+        if (History.isHistoryStakingTx(summary)) {
+            map["stakeStart"] = summary.stakeStart
+            map["stakeEnd"] = summary.stakeEnd
+            map["nodeID"] = summary.nodeID
+            map["amount"] = summary.amountDisplayValue
+            map["amountL"] = Utils.bnToAxcSwap(summary.amount)
+            map["isRewarded"] = summary.isRewarded
+            map["rewardAmount"] = summary.rewardAmountDisplayValue
+        }
+        if (History.isHistoryEVMTx(summary)) {
+            map["amount"] = summary.amountDisplayValue
+            map["amountL"] = Utils.bnToAxcSwap(summary.amount)
+            map["from"] = summary.from
+            map["to"] = summary.to
+            map["isSender"] = summary.isSender
+        }
+        // const objectified = JSON.parse(JSON.stringify(summary))
+        // console.log(objectified["fee"])
+        // objectified["fee"] = Utils.bnToAxcSwap(new BN(parseInt(objectified["fee"], 16)))
+        // console.log(summary)
+        // console.log(JSON.parse(JSON.stringify(summary)))
+        data.push(map)
     }
     console.log(data)
     return data
-}
-
-async function _waitExportStatus(chain: string, txID: string, remainingTries = 15): Promise<boolean> {
-    let status
-    switch (chain) {
-        case "X":
-            status = await xChain.getTxStatus(txID)
-            break;
-        case "P":
-            let resp = await pChain.getTxStatus(txID)
-            if (typeof resp === 'string') {
-                status = resp
-            } else {
-                status = resp.status
-            }
-            break;
-        case "C":
-            status = await cChain.getAtomicTxStatus(txID)
-            break;
-
-        default:
-            break;
-    }
-    const asd = JSON.stringify(status)
-    console.log(asd)
-    console.log(status)
-    if (status === 'Unknown' || status === 'Processing') {
-        // If out of tries
-        if (remainingTries <= 0) {
-            // Timed out
-            return false
-        }
-        // if not confirmed ask again
-        setTimeout(() => {
-            console.log("Retrying (" + remainingTries + ")")
-            this._exportStatus(chain, txID, remainingTries - 1)
-        }, 1000)
-        return false
-    } else if (status === 'Dropped') {
-        // If dropped stop the process
-        return false
-    } else {
-        // If success start import
-        return true
-    }
-
 }
 
 export default {
@@ -147,4 +199,5 @@ export default {
     getEstimatedGasLimit,
     sameChain,
     crossChain,
+    getTransactions,
 }

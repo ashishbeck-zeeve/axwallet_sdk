@@ -1,46 +1,46 @@
-import {NetworkConfig, getRpcP, getRpcC, getRpcX, } from "@avalabs/avalanche-wallet-sdk"
-import { utils } from "avalanche";
+import { Network } from "@axia-systems/wallet-sdk"
+import { utils } from "@axia-systems/axiajs";
 
-export const testNetConfig: NetworkConfig = {
-    rawUrl: 'https://api.avax-test.network',
+export const axTestNetConfig: Network.NetworkConfig = {
+    rawUrl: 'https://1.p2p-v2.testnet.axiacoin.network',
     apiProtocol: 'https',
-    apiIp: 'api.avax-test.network',
+    apiIp: '1.p2p-v2.testnet.axiacoin.network',
     apiPort: 443,
-    explorerURL: 'https://explorerapi.avax-test.network',
-    explorerSiteURL: 'https://explorer.avax-test.network',
+    explorerURL: 'https://magellan-v2.testnet.axiacoin.network',
+    explorerSiteURL: 'https://axchain-v2.mainnet.axiacoin.network',
     networkID: 5,
-    xChainID: utils.Defaults.network[5]['X']['blockchainID'],
-    pChainID: utils.Defaults.network[5]['P']['blockchainID'],
-    cChainID: utils.Defaults.network[5]['C']['blockchainID'],
-    evmChainID: utils.Defaults.network[5]['C']['chainID'],
-    avaxID: utils.Defaults.network[5]['X']['avaxAssetID'],
+    swapChainID: utils.Defaults.network[5]['Swap']['blockchainID'],
+    coreChainID: utils.Defaults.network[5]['Core']['blockchainID'],
+    axChainID: utils.Defaults.network[5]['AX']['blockchainID'],
+    evmChainID: utils.Defaults.network[5]['AX']['chainID'],
+    axcID: utils.Defaults.network[5]['Swap']['axcAssetID'],
     get rpcUrl() {
         return {
-            c: getRpcC(this),
-            p: getRpcP(this),
-            x: getRpcX(this),
+            ax: Network.getRpcAX(this),
+            core: Network.getRpcCore(this),
+            swap: Network.getRpcSwap(this),
         };
     },
 }
 
-export const axTestNetConfig: NetworkConfig = {
-    rawUrl: 'http://rpc-v2.canarytest.axiacoin.network',
-    apiProtocol: 'http',
-    apiIp: 'rpc-v2.canarytest.axiacoin.network',
-    apiPort: 9650,
-    explorerURL: 'https://explorerapi.avax-test.network',
-    explorerSiteURL: 'https://explorer.avax-test.network',
-    networkID: 0,
-    xChainID: utils.Defaults.network[5]['X']['blockchainID'],
-    pChainID: utils.Defaults.network[5]['P']['blockchainID'],
-    cChainID: utils.Defaults.network[5]['C']['blockchainID'],
-    evmChainID: utils.Defaults.network[5]['C']['chainID'],
-    avaxID: utils.Defaults.network[5]['X']['avaxAssetID'],
+export const axMainNetConfig: Network.NetworkConfig = {
+    rawUrl: 'https://1.p2p-v2.mainnet.axiacoin.network',
+    apiProtocol: 'https',
+    apiIp: '1.p2p-v2.mainnet.axiacoin.network',
+    apiPort: 443,
+    explorerURL: 'https://magellan-v2.mainnet.axiacoin.network',
+    explorerSiteURL: 'https://axchain-v2.mainnet.axiacoin.network',
+    networkID: 1,
+    swapChainID: utils.Defaults.network[1]['Swap']['blockchainID'],
+    coreChainID: utils.Defaults.network[1]['Core']['blockchainID'],
+    axChainID: utils.Defaults.network[1]['AX']['blockchainID'],
+    evmChainID: utils.Defaults.network[1]['AX']['chainID'],
+    axcID: utils.Defaults.network[1]['Swap']['axcAssetID'],
     get rpcUrl() {
         return {
-            c: getRpcC(this),
-            p: getRpcP(this),
-            x: getRpcX(this),
+            ax: Network.getRpcAX(this),
+            core: Network.getRpcCore(this),
+            swap: Network.getRpcSwap(this),
         };
     },
 }

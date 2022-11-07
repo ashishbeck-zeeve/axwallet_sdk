@@ -11,17 +11,34 @@ class ServiceNomination {
     return res;
   }
 
-  Future delegateNode({
+  Future addValidator({
+    required String nodeID,
+    required String amount,
+    required int end,
+    required double fee,
+    String? rewardAddress,
+  }) async {
+    DateTime endDate = DateTime.fromMillisecondsSinceEpoch(end);
+    Duration period = const Duration(days: 120);
+    int start = endDate.subtract(period).millisecondsSinceEpoch;
+    final res = await serviceRoot.webView.evalJavascript(rewardAddress == null
+        ? 'nomination.addValidator("$nodeID", "$amount", $start, $end, $fee)'
+        : 'nomination.addValidator("$nodeID", "$amount", $start, $end, $fee, "$rewardAddress")');
+    return res;
+  }
+
+  Future nominateNode({
     required String nodeID,
     required String amount,
     required int end,
     String? rewardAddress,
   }) async {
-    int bufferTime = 300000; // 5 minutes
-    int start = DateTime.now().millisecondsSinceEpoch + bufferTime;
+    DateTime endDate = DateTime.fromMillisecondsSinceEpoch(end);
+    Duration period = const Duration(days: 120);
+    int start = endDate.subtract(period).millisecondsSinceEpoch;
     final res = await serviceRoot.webView.evalJavascript(rewardAddress == null
-        ? 'nomination.delegateNode("$nodeID", "$amount", $start, $end)'
-        : 'nomination.delegateNode("$nodeID", "$amount", $start, $end, "$rewardAddress")');
+        ? 'nomination.nominateNode("$nodeID", "$amount", $start, $end)'
+        : 'nomination.nominateNode("$nodeID", "$amount", $start, $end, "$rewardAddress")');
     return res;
   }
 }

@@ -1,18 +1,24 @@
-# js_api
+# AXwallet API SDK
 
-Wrap `@axia-js/api` to provide APIs for AXwallet.
-<!-- 
-@axia-js-js/api: ^v1.29.1 -->
+Wraps `@axiawallet_sdk/js-api` inside a headless inapp webview in flutter to provide APIs for AXwallet.
 
-## build & test
+## Build & Test
 
-To build:
+### To build:
 
 ```bash
 npm install
 npm run build
 ```
+or
+```bash
+yarn install
+yarn build
+```
 
-To test:
-open `./test/index.html` in chrome.
-open chrome dev console and run `runTests().then(console.log)`
+### To test:
+- Open `./test/index.html` in chrome.
+- Open dev console
+- Wait for the test wallet to load
+- Run `runTests()`
+- All the other functions are available to be executed through the console- `basic`, `transfer` and `nomination`

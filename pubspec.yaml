@@ -1,6 +1,6 @@
 name: axwallet_sdk
 description: A new Flutter project.
-version: 0.1.2
+version: 2.0.3
 homepage:
 
 environment:
@@ -13,8 +13,6 @@ dependencies:
   http: any
   webview_flutter: any
   flutter_inappwebview: any
-  jaguar: any
-  jaguar_flutter_asset: any
 
 dev_dependencies:
   flutter_test:
@@ -29,8 +27,6 @@ flutter:
 
   # To add assets to your package, add an assets section, like this:
   assets:
-    - lib/ssl/certificate.txt
-    - lib/ssl/keys.txt
     - assets/index.html
     - js_api/dist/main.js
   #

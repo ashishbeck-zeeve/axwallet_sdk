@@ -1,36 +1,31 @@
-import { Avalanche } from "avalanche";
-import { testNetConfig } from "./networkConfigs";
-const ip: string = 'api.avax-test.network'
+import { Axia, BinTools } from "@axia-systems/axiajs";
+import { axTestNetConfig } from "./networkConfigs";
+import { NetworkConfig } from "@axia-systems/wallet-sdk/dist/Network";
+const ip: string = '1.p2p-v2.testnet.axiacoin.network'
 const port: number = 443
 const protocol: string = 'https'
-const hrp: string = "fuji"
-const network_id: number = 5
-// const ip: string = 'rpc-v2.canarytest.axiacoin.network'
-// const port: number = 9650
-// const protocol: string = 'http'
-// const hrp: string = "custom"
-// const network_id: number = 0
+const hrp: string = "custom"
+const network_id: number = 0
 const chain_id: string = 'X'
+export const MIN_STAKING_DAYS = 120
+export const MIN_STAKING_AMOUNT = 20
+export const bintools = BinTools.getInstance()
+const config = axTestNetConfig
+let axia: Axia = new Axia(config.apiIp, config.apiPort, config.apiProtocol, config.networkID)
+// const swapChain = axia.SwapChain()
+// const coreChain = axia.CoreChain()
+// const axChain = axia.AXChain() 
 
-const avalanche: Avalanche = new Avalanche(testNetConfig.apiIp, testNetConfig.apiPort, testNetConfig.apiProtocol,
-  testNetConfig.networkID)
-const xChain = avalanche.XChain() // X
-const pChain = avalanche.PChain() // P
-const cChain = avalanche.CChain() // C
+function changeAxiaProvider(config: NetworkConfig) {
+  // axia = createAxiaProvider(config)
+  axia = new Axia(config.apiIp, config.apiPort, config.apiProtocol, config.networkID)
 
-export {
-  xChain,
-  pChain,
-  cChain,
 }
 
-// export const NetworkIDToHRP = {
-//   0: "custom",
-//   1: "avax",
-//   2: "cascade",
-//   3: "denali",
-//   4: "everest",
-//   5: "fuji",
-//   1337: "custom",
-//   12345: "local",
-// }
+export {
+  axia,
+  changeAxiaProvider,
+  // swapChain ,
+  // coreChain ,
+  // axChain ,
+}

@@ -1,4 +1,5 @@
 import 'package:axwallet_sdk/src/api/index.dart';
+import 'package:axwallet_sdk/models/index.dart';
 import 'package:axwallet_sdk/src/service/basic.dart';
 
 class ApiBasic {
@@ -7,8 +8,8 @@ class ApiBasic {
   final Api apiRoot;
   final ServiceBasic service;
 
-  Future init({String? mnemonic}) async {
-    final res = await service.init(mnemonic: mnemonic);
+  Future init({String? mnemonic, required NetworkConfig network}) async {
+    final res = await service.init(mnemonic: mnemonic, network: network);
     return res;
   }
 
@@ -22,8 +23,13 @@ class ApiBasic {
     return res;
   }
 
-  Future changeNetwork({bool isTestNet = true}) async {
-    final res = await service.changeNetwork(isTestNet: isTestNet);
+  Future<bool> changeNetwork(NetworkConfig network) async {
+    final res = await service.changeNetwork(network);
+    return res;
+  }
+
+  Future<bool> tests() async {
+    final res = await service.tests();
     return res;
   }
 }

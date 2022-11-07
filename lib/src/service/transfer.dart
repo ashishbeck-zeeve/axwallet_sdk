@@ -1,4 +1,5 @@
 import 'package:axwallet_sdk/src/service/index.dart';
+import 'package:axwallet_sdk/models/index.dart';
 
 class ServiceTransfer {
   ServiceTransfer(this.serviceRoot);
@@ -43,5 +44,11 @@ class ServiceTransfer {
     final res = await serviceRoot.webView
         .evalJavascript('transfer.crossChain("$from", "$to", "$amount")');
     return res;
+  }
+
+  Future<List<AXCTransaction>> getTransactions() async {
+    final res = (await serviceRoot.webView
+        .evalJavascript('transfer.getTransactions()')) as List;
+    return res.map((e) => AXCTransaction.fromMap(e)).toList();
   }
 }

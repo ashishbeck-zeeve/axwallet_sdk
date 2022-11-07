@@ -4,6 +4,7 @@ import 'package:axwallet_sdk/src/api/apiSeedPhrase.dart';
 import 'package:axwallet_sdk/src/service/basic.dart';
 import 'package:axwallet_sdk/src/service/nomination.dart';
 import 'package:axwallet_sdk/src/service/transfer.dart';
+import 'package:axwallet_sdk/src/service/utils.dart';
 import 'package:axwallet_sdk/src/webViewRunner.dart';
 
 class Service {
@@ -11,6 +12,7 @@ class Service {
   late ServiceNomination nomination;
   late ApiSeedPhrase apiSeedPhrase;
   late ServiceTransfer transfer;
+  late ServiceUtils utils;
 
   late WebViewRunner _web;
 
@@ -25,6 +27,7 @@ class Service {
     nomination = ServiceNomination(this);
     apiSeedPhrase = ApiSeedPhrase(this);
     transfer = ServiceTransfer(this);
+    utils = ServiceUtils(this);
 
     _web = webViewParam ?? WebViewRunner();
     await _web.launch(onInitiated, jsCode: jsCode);

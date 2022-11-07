@@ -5,8 +5,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:jaguar/jaguar.dart';
-import 'package:jaguar_flutter_asset/jaguar_flutter_asset.dart';
 
 class WebViewRunner {
   HeadlessInAppWebView? _web;
@@ -43,11 +41,15 @@ class WebViewRunner {
         initialOptions: InAppWebViewGroupOptions(
           crossPlatform: InAppWebViewOptions(),
         ),
+        initialUrlRequest: URLRequest(url: Uri.parse("http://localhost:8006/")),
         onWebViewCreated: (controller) {
           print('HeadlessInAppWebView created!');
         },
         onConsoleMessage: (controller, message) {
           print("CONSOLE MESSAGE: " + message.message);
+          if (message.messageLevel == ConsoleMessageLevel.ERROR) {
+            print("well this is not right");
+          }
           if (message.messageLevel != ConsoleMessageLevel.LOG) return;
 
           compute(jsonDecode, message.message).then((msg) {
@@ -73,10 +75,10 @@ class WebViewRunner {
           await _startJSCode();
         },
       );
-
+      await _web?.dispose();
       await _web!.run();
-      _web!.webViewController.loadUrl(
-          urlRequest: URLRequest(url: Uri.parse("https://localhost:8080/")));
+      // _web!.webViewController.loadUrl(
+      //     urlRequest: URLRequest(url: Uri.parse("https://localhost:8080/")));
     } else {
       _tryReload();
     }
@@ -96,17 +98,8 @@ class WebViewRunner {
   }
 
   Future<void> _startLocalServer() async {
-    final cert =
-        await rootBundle.load("packages/axwallet_sdk/lib/ssl/certificate.txt");
-    final keys =
-        await rootBundle.load("packages/axwallet_sdk/lib/ssl/keys.txt");
-    final security = SecurityContext()
-      ..useCertificateChainBytes(cert.buffer.asInt8List())
-      ..usePrivateKeyBytes(keys.buffer.asInt8List());
-    // Serves the API at localhost:8080 by default
-    final server = Jaguar(securityContext: security, port: 8006);
-    server.addRoute(serveFlutterAssets());
-    await server.serve(logRequests: false);
+    final localhostServer = InAppLocalhostServer(port: 8006);
+    await localhostServer.start();
   }
 
   Future<void> _startJSCode() async {
